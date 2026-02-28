@@ -69,7 +69,8 @@ class Tracker
             return;
         }
 
-        Database::logVisit($visitorId, $pageUrl, $referrer, $userAgent);
+        $parsed = UserAgentParser::parse($userAgent);
+        Database::logVisit($visitorId, $pageUrl, $referrer, $userAgent, $parsed['device_type'], $parsed['browser'], $parsed['os']);
         wp_send_json_success();
     }
 
@@ -109,9 +110,7 @@ class Tracker
 
     private static function getCurrentPageUrl(): string
     {
-        return wp_parse_url(
-            home_url(add_query_arg(null, null)),
-            PHP_URL_PATH
-        ) ?: '/';
+        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        return wp_parse_url(home_url($uri), PHP_URL_PATH) ?: '/';
     }
 }

@@ -26,7 +26,8 @@ class VisualMode
             return;
         }
 
-        $currentUrl = home_url(add_query_arg(null, null));
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $currentUrl = home_url($requestUri);
         $visualUrl = add_query_arg('ept_visual_mode', '1', $currentUrl);
 
         $adminBar->add_node([
@@ -49,12 +50,13 @@ class VisualMode
             return;
         }
 
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
         $pageUrl = wp_parse_url(
-            remove_query_arg('ept_visual_mode', home_url(add_query_arg(null, null))),
+            remove_query_arg('ept_visual_mode', home_url($requestUri)),
             PHP_URL_PATH
         ) ?: '/';
 
-        $exitUrl = remove_query_arg('ept_visual_mode');
+        $exitUrl = remove_query_arg('ept_visual_mode', $requestUri);
 
         wp_enqueue_style('dashicons');
         wp_enqueue_style('ept-visual-mode', EPT_PLUGIN_URL . 'assets/css/visual-mode.css', ['dashicons'], EPT_VERSION);

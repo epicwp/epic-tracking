@@ -30,6 +30,16 @@ class Admin
             'epic-tracking-settings',
             [self::class, 'renderSettings']
         );
+
+        // Page detail — registered under parent for proper WP globals, hidden via CSS
+        add_submenu_page(
+            'epic-tracking',
+            'Page Detail',
+            '',
+            'manage_options',
+            'epic-tracking-page-detail',
+            [self::class, 'renderPageDetail']
+        );
     }
 
     public static function registerSettings(): void
@@ -82,6 +92,9 @@ class Admin
         $visitSummary = Database::getVisitSummary($sqlFrom, $sqlTo);
         $eventSummary = Database::getEventSummary($sqlFrom, $sqlTo);
 
+        // Daily breakdown
+        $dailyVisits = Database::getDailyVisits($sqlFrom, $sqlTo);
+
         // Paginated table data
         $visitStats      = Database::getVisitStats($sqlFrom, $sqlTo, self::PER_PAGE, $visitPage);
         $visitTotalPages = (int) ceil(Database::getVisitStatsCount($sqlFrom, $sqlTo) / self::PER_PAGE);
@@ -90,6 +103,42 @@ class Admin
         $eventTotalPages = (int) ceil(Database::getEventStatsCount($filterUrl) / self::PER_PAGE);
 
         include EPT_PLUGIN_DIR . 'templates/admin-dashboard.php';
+    }
+
+    public static function renderPageDetail(): void
+    {
+        wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
+
+        $pageUrl = sanitize_text_field($_GET['page_url'] ?? '');
+        if ($pageUrl === '') {
+            wp_die('Missing page URL.');
+        }
+
+        // Date range — same logic as dashboard
+        $today    = gmdate('Y-m-d');
+        $dateFrom = sanitize_text_field($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days')));
+        $dateTo   = sanitize_text_field($_GET['date_to'] ?? $today);
+
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+            $dateFrom = gmdate('Y-m-d', strtotime('-6 days'));
+        }
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+            $dateTo = $today;
+        }
+
+        $sqlFrom = $dateFrom . ' 00:00:00';
+        $sqlTo   = gmdate('Y-m-d', strtotime($dateTo . ' +1 day')) . ' 00:00:00';
+
+        // All page-specific queries
+        $summary    = Database::getPageVisitSummary($pageUrl, $sqlFrom, $sqlTo);
+        $dailyVisits = Database::getPageDailyVisits($pageUrl, $sqlFrom, $sqlTo);
+        $referrers  = Database::getPageReferrers($pageUrl, $sqlFrom, $sqlTo);
+        $devices    = Database::getPageDeviceBreakdown($pageUrl, $sqlFrom, $sqlTo);
+        $browsers   = Database::getPageBrowserBreakdown($pageUrl, $sqlFrom, $sqlTo);
+        $osList     = Database::getPageOsBreakdown($pageUrl, $sqlFrom, $sqlTo);
+        $events     = Database::getPageEvents($pageUrl, $sqlFrom, $sqlTo);
+
+        include EPT_PLUGIN_DIR . 'templates/admin-page-detail.php';
     }
 
     public static function renderSettings(): void

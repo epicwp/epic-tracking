@@ -4,7 +4,7 @@ namespace EpicTracking;
 
 class Database
 {
-    const DB_VERSION = '1.0.0';
+    const DB_VERSION = '1.1.0';
     const DB_VERSION_OPTION = 'ept_db_version';
 
     public static function init(): void
@@ -51,11 +51,17 @@ class Database
             page_url varchar(500) NOT NULL,
             referrer varchar(500) DEFAULT '',
             user_agent varchar(500) DEFAULT '',
+            device_type varchar(20) NOT NULL DEFAULT '',
+            browser varchar(50) NOT NULL DEFAULT '',
+            os varchar(50) NOT NULL DEFAULT '',
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY visitor_id (visitor_id),
             KEY page_url (page_url(191)),
-            KEY created_at (created_at)
+            KEY created_at (created_at),
+            KEY device_type (device_type),
+            KEY browser (browser),
+            KEY os (os)
         ) $charset;
 
         CREATE TABLE {$wpdb->prefix}ept_event_log (
@@ -120,14 +126,17 @@ class Database
         return (bool) $wpdb->delete("{$wpdb->prefix}ept_events", ['id' => $id]);
     }
 
-    public static function logVisit(string $visitorId, string $pageUrl, string $referrer, string $userAgent): void
+    public static function logVisit(string $visitorId, string $pageUrl, string $referrer, string $userAgent, string $deviceType = '', string $browser = '', string $os = ''): void
     {
         global $wpdb;
         $wpdb->insert("{$wpdb->prefix}ept_visits", [
-            'visitor_id' => $visitorId,
-            'page_url'   => $pageUrl,
-            'referrer'   => $referrer,
-            'user_agent' => $userAgent,
+            'visitor_id'  => $visitorId,
+            'page_url'    => $pageUrl,
+            'referrer'    => $referrer,
+            'user_agent'  => $userAgent,
+            'device_type' => $deviceType,
+            'browser'     => $browser,
+            'os'          => $os,
         ]);
     }
 
@@ -245,6 +254,149 @@ class Database
                  ORDER BY total_triggers DESC
                  LIMIT %d OFFSET %d",
                 $params
+            ),
+            ARRAY_A
+        );
+    }
+
+    // ── Page detail & daily breakdown queries ──────────────────────────
+
+    public static function getDailyVisits(string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT DATE(created_at) as visit_date,
+                        COUNT(*) as total_visits,
+                        COUNT(DISTINCT visitor_id) as unique_visitors
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE created_at >= %s AND created_at < %s
+                 GROUP BY visit_date
+                 ORDER BY visit_date ASC",
+                $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageVisitSummary(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT COUNT(*) as total_visits,
+                        COUNT(DISTINCT visitor_id) as unique_visitors
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s",
+                $pageUrl, $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+        return $row ?: ['total_visits' => 0, 'unique_visitors' => 0];
+    }
+
+    public static function getPageDailyVisits(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT DATE(created_at) as visit_date,
+                        COUNT(*) as total_visits,
+                        COUNT(DISTINCT visitor_id) as unique_visitors
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s
+                 GROUP BY visit_date
+                 ORDER BY visit_date ASC",
+                $pageUrl, $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageReferrers(string $pageUrl, string $dateFrom, string $dateTo, int $limit = 10): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT referrer, COUNT(*) as visits
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s
+                       AND referrer != ''
+                 GROUP BY referrer
+                 ORDER BY visits DESC
+                 LIMIT %d",
+                $pageUrl, $dateFrom, $dateTo, $limit
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageDeviceBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT device_type, COUNT(*) as visits
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s
+                       AND device_type != ''
+                 GROUP BY device_type
+                 ORDER BY visits DESC",
+                $pageUrl, $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageBrowserBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT browser, COUNT(*) as visits
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s
+                       AND browser != ''
+                 GROUP BY browser
+                 ORDER BY visits DESC",
+                $pageUrl, $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageOsBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT os, COUNT(*) as visits
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s
+                       AND os != ''
+                 GROUP BY os
+                 ORDER BY visits DESC",
+                $pageUrl, $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageEvents(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT e.id, e.reference_name, e.event_tag, e.event_type,
+                        COUNT(l.id) as total_triggers,
+                        COUNT(DISTINCT l.visitor_id) as unique_visitors
+                 FROM {$wpdb->prefix}ept_events e
+                 LEFT JOIN {$wpdb->prefix}ept_event_log l ON e.id = l.event_id
+                    AND l.created_at >= %s AND l.created_at < %s
+                 WHERE e.page_url = %s
+                 GROUP BY e.id
+                 ORDER BY total_triggers DESC",
+                $dateFrom, $dateTo, $pageUrl
             ),
             ARRAY_A
         );

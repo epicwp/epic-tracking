@@ -260,3 +260,44 @@
     margin: 0;
     font-size: 13px;
 }
+
+/* 2-column stat row (page detail) */
+.ept-stats-row--2col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+/* 3-column breakdown grid (device / browser / OS) */
+.ept-breakdown-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+@media screen and (max-width: 960px) {
+    .ept-breakdown-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ept-stats-row--2col {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Page detail header */
+.ept-page-detail-header {
+    margin-bottom: 0;
+}
+
+.ept-back-link {
+    display: inline-block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.ept-back-link:hover {
+    color: #135e96;
+    text-decoration: underline;
+}

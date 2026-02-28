@@ -1,14 +1,23 @@
 <div class="wrap">
     <h1>Tracking</h1>
 
-    <div class="ept-date-filter">
-        <a href="<?php echo esc_url(add_query_arg(['range' => '1', 'vpage' => false, 'epage' => false])); ?>"
-           class="button <?php echo $range === '1' ? 'button-primary' : ''; ?>">Today</a>
-        <a href="<?php echo esc_url(add_query_arg(['range' => '7', 'vpage' => false, 'epage' => false])); ?>"
-           class="button <?php echo $range === '7' ? 'button-primary' : ''; ?>">Last 7 days</a>
-        <a href="<?php echo esc_url(add_query_arg(['range' => '30', 'vpage' => false, 'epage' => false])); ?>"
-           class="button <?php echo $range === '30' ? 'button-primary' : ''; ?>">Last 30 days</a>
-    </div>
+    <?php
+    $baseUrl = admin_url('admin.php?page=epic-tracking');
+    if ($filterUrl !== '') {
+        $baseUrl = add_query_arg('filter_url', $filterUrl, $baseUrl);
+    }
+    ?>
+    <form method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>" class="ept-date-filter">
+        <input type="hidden" name="page" value="epic-tracking">
+        <?php if ($filterUrl !== '') : ?>
+            <input type="hidden" name="filter_url" value="<?php echo esc_attr($filterUrl); ?>">
+        <?php endif; ?>
+        <label for="ept-date-from">From</label>
+        <input type="date" id="ept-date-from" name="date_from" value="<?php echo esc_attr($dateFrom); ?>" max="<?php echo esc_attr($dateTo); ?>">
+        <label for="ept-date-to">To</label>
+        <input type="date" id="ept-date-to" name="date_to" value="<?php echo esc_attr($dateTo); ?>" max="<?php echo esc_attr(gmdate('Y-m-d')); ?>">
+        <button type="submit" class="button button-primary">Apply</button>
+    </form>
 
     <div class="ept-stats-row">
         <div class="ept-stat-card">
@@ -30,108 +39,104 @@
     </div>
 
     <div class="ept-dashboard-grid">
-        <div class="postbox">
-            <h2 class="hndle"><span class="dashicons dashicons-visibility"></span> Page Visits</h2>
-            <div class="inside">
-                <?php if (empty($visitStats)) : ?>
-                    <div class="ept-empty-state">
-                        <span class="dashicons dashicons-visibility"></span>
-                        <p>No visit data for this period.</p>
-                    </div>
-                <?php else : ?>
-                    <table class="widefat striped">
-                        <thead>
+        <div class="ept-section">
+            <h2 class="ept-section-title"><span class="dashicons dashicons-visibility"></span> Page Visits</h2>
+            <?php if (empty($visitStats)) : ?>
+                <div class="ept-empty-state">
+                    <span class="dashicons dashicons-visibility"></span>
+                    <p>No visit data for this period.</p>
+                </div>
+            <?php else : ?>
+                <table class="ept-table">
+                    <thead>
+                        <tr>
+                            <th>Page</th>
+                            <th class="ept-col-num">Total Visits</th>
+                            <th class="ept-col-num">Unique Visitors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($visitStats as $row) :
+                            $eventsUrl = esc_url(add_query_arg(['filter_url' => $row['page_url'], 'epage' => false]));
+                        ?>
                             <tr>
-                                <th>Page</th>
-                                <th>Total Visits</th>
-                                <th>Unique Visitors</th>
+                                <td><a href="<?php echo $eventsUrl; ?>#ept-events-section"><?php echo esc_html($row['page_url']); ?></a></td>
+                                <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['total_visits'])); ?></td>
+                                <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['unique_visitors'])); ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($visitStats as $row) :
-                                $eventsUrl = esc_url(add_query_arg(['filter_url' => $row['page_url'], 'epage' => false]));
-                            ?>
-                                <tr>
-                                    <td><a href="<?php echo $eventsUrl; ?>#ept-events-section"><?php echo esc_html($row['page_url']); ?></a></td>
-                                    <td><?php echo esc_html(number_format_i18n($row['total_visits'])); ?></td>
-                                    <td><?php echo esc_html(number_format_i18n($row['unique_visitors'])); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <?php if ($visitTotalPages > 1) : ?>
-                        <div class="ept-pagination">
-                            <?php
-                            echo paginate_links([
-                                'base'      => add_query_arg('vpage', '%#%'),
-                                'format'    => '',
-                                'current'   => $visitPage,
-                                'total'     => $visitTotalPages,
-                                'prev_text' => '&laquo;',
-                                'next_text' => '&raquo;',
-                            ]);
-                            ?>
-                        </div>
-                    <?php endif; ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php if ($visitTotalPages > 1) : ?>
+                    <div class="ept-pagination">
+                        <?php
+                        echo paginate_links([
+                            'base'      => add_query_arg('vpage', '%#%'),
+                            'format'    => '',
+                            'current'   => $visitPage,
+                            'total'     => $visitTotalPages,
+                            'prev_text' => '&laquo;',
+                            'next_text' => '&raquo;',
+                        ]);
+                        ?>
+                    </div>
                 <?php endif; ?>
-            </div>
+            <?php endif; ?>
         </div>
 
-        <div class="postbox" id="ept-events-section">
-            <h2 class="hndle"><span class="dashicons dashicons-admin-links"></span> Events</h2>
-            <div class="inside">
-                <?php if ($filterUrl !== '') : ?>
-                    <div class="ept-active-filter">
-                        <span>Filtered by: <strong><?php echo esc_html($filterUrl); ?></strong></span>
-                        <a href="<?php echo esc_url(add_query_arg(['filter_url' => false, 'epage' => false])); ?>" class="ept-clear-filter">Clear filter</a>
-                    </div>
-                <?php endif; ?>
-                <?php if (empty($eventStats)) : ?>
-                    <div class="ept-empty-state">
-                        <span class="dashicons dashicons-admin-links"></span>
-                        <p>No event data for this period.</p>
-                    </div>
-                <?php else : ?>
-                    <table class="widefat striped">
-                        <thead>
+        <div class="ept-section" id="ept-events-section">
+            <h2 class="ept-section-title"><span class="dashicons dashicons-admin-links"></span> Events</h2>
+            <?php if ($filterUrl !== '') : ?>
+                <div class="ept-active-filter">
+                    <span>Filtered by: <strong><?php echo esc_html($filterUrl); ?></strong></span>
+                    <a href="<?php echo esc_url(add_query_arg(['filter_url' => false, 'epage' => false])); ?>" class="ept-clear-filter">Clear filter</a>
+                </div>
+            <?php endif; ?>
+            <?php if (empty($eventStats)) : ?>
+                <div class="ept-empty-state">
+                    <span class="dashicons dashicons-admin-links"></span>
+                    <p>No event data for this period.</p>
+                </div>
+            <?php else : ?>
+                <table class="ept-table">
+                    <thead>
+                        <tr>
+                            <th>Reference</th>
+                            <th>Event Tag</th>
+                            <th>Type</th>
+                            <th>Page</th>
+                            <th class="ept-col-num">Triggers</th>
+                            <th class="ept-col-num">Unique Visitors</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($eventStats as $row) : ?>
                             <tr>
-                                <th>Reference</th>
-                                <th>Event Tag</th>
-                                <th>Type</th>
-                                <th>Page</th>
-                                <th>Triggers</th>
-                                <th>Unique Visitors</th>
+                                <td><?php echo esc_html($row['reference_name']); ?></td>
+                                <td><code><?php echo esc_html($row['event_tag']); ?></code></td>
+                                <td><span class="ept-badge"><?php echo esc_html($row['event_type']); ?></span></td>
+                                <td><a href="<?php echo esc_url(add_query_arg(['filter_url' => $row['page_url'], 'epage' => false])); ?>#ept-events-section"><?php echo esc_html($row['page_url']); ?></a></td>
+                                <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['total_triggers'])); ?></td>
+                                <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['unique_visitors'])); ?></td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($eventStats as $row) : ?>
-                                <tr>
-                                    <td><?php echo esc_html($row['reference_name']); ?></td>
-                                    <td><code><?php echo esc_html($row['event_tag']); ?></code></td>
-                                    <td><?php echo esc_html($row['event_type']); ?></td>
-                                    <td><?php echo esc_html($row['page_url']); ?></td>
-                                    <td><?php echo esc_html(number_format_i18n($row['total_triggers'])); ?></td>
-                                    <td><?php echo esc_html(number_format_i18n($row['unique_visitors'])); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                    <?php if ($eventTotalPages > 1) : ?>
-                        <div class="ept-pagination">
-                            <?php
-                            echo paginate_links([
-                                'base'      => add_query_arg('epage', '%#%'),
-                                'format'    => '',
-                                'current'   => $eventPage,
-                                'total'     => $eventTotalPages,
-                                'prev_text' => '&laquo;',
-                                'next_text' => '&raquo;',
-                            ]);
-                            ?>
-                        </div>
-                    <?php endif; ?>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+                <?php if ($eventTotalPages > 1) : ?>
+                    <div class="ept-pagination">
+                        <?php
+                        echo paginate_links([
+                            'base'      => add_query_arg('epage', '%#%'),
+                            'format'    => '',
+                            'current'   => $eventPage,
+                            'total'     => $eventTotalPages,
+                            'prev_text' => '&laquo;',
+                            'next_text' => '&raquo;',
+                        ]);
+                        ?>
+                    </div>
                 <?php endif; ?>
-            </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

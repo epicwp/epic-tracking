@@ -141,7 +141,7 @@ class Database
         ]);
     }
 
-    public static function getVisitSummary(int $days): array
+    public static function getVisitSummary(string $dateFrom, string $dateTo): array
     {
         global $wpdb;
         $row = $wpdb->get_row(
@@ -149,28 +149,28 @@ class Database
                 "SELECT COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
                  FROM {$wpdb->prefix}ept_visits
-                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
-                $days
+                 WHERE created_at >= %s AND created_at < %s",
+                $dateFrom, $dateTo
             ),
             ARRAY_A
         );
         return $row ?: ['total_visits' => 0, 'unique_visitors' => 0];
     }
 
-    public static function getVisitStatsCount(int $days): int
+    public static function getVisitStatsCount(string $dateFrom, string $dateTo): int
     {
         global $wpdb;
         return (int) $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT COUNT(DISTINCT page_url)
                  FROM {$wpdb->prefix}ept_visits
-                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
-                $days
+                 WHERE created_at >= %s AND created_at < %s",
+                $dateFrom, $dateTo
             )
         );
     }
 
-    public static function getVisitStats(int $days, int $perPage = 20, int $page = 1): array
+    public static function getVisitStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1): array
     {
         global $wpdb;
         $offset = ($page - 1) * $perPage;
@@ -180,17 +180,17 @@ class Database
                         COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
                  FROM {$wpdb->prefix}ept_visits
-                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
+                 WHERE created_at >= %s AND created_at < %s
                  GROUP BY page_url
                  ORDER BY total_visits DESC
                  LIMIT %d OFFSET %d",
-                $days, $perPage, $offset
+                $dateFrom, $dateTo, $perPage, $offset
             ),
             ARRAY_A
         );
     }
 
-    public static function getEventSummary(int $days): array
+    public static function getEventSummary(string $dateFrom, string $dateTo): array
     {
         global $wpdb;
         $row = $wpdb->get_row(
@@ -198,8 +198,8 @@ class Database
                 "SELECT COUNT(l.id) as total_triggers,
                         COUNT(DISTINCT l.visitor_id) as unique_visitors
                  FROM {$wpdb->prefix}ept_event_log l
-                 WHERE l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
-                $days
+                 WHERE l.created_at >= %s AND l.created_at < %s",
+                $dateFrom, $dateTo
             ),
             ARRAY_A
         );
@@ -220,12 +220,12 @@ class Database
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}ept_events");
     }
 
-    public static function getEventStats(int $days, int $perPage = 20, int $page = 1, string $pageUrl = ''): array
+    public static function getEventStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1, string $pageUrl = ''): array
     {
         global $wpdb;
         $offset = ($page - 1) * $perPage;
         $where = '';
-        $params = [$days];
+        $params = [$dateFrom, $dateTo];
         if ($pageUrl !== '') {
             $where = 'WHERE e.page_url = %s';
             $params[] = $pageUrl;
@@ -239,7 +239,7 @@ class Database
                         COUNT(DISTINCT l.visitor_id) as unique_visitors
                  FROM {$wpdb->prefix}ept_events e
                  LEFT JOIN {$wpdb->prefix}ept_event_log l ON e.id = l.event_id
-                    AND l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
+                    AND l.created_at >= %s AND l.created_at < %s
                  $where
                  GROUP BY e.id
                  ORDER BY total_triggers DESC

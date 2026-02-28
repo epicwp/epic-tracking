@@ -1,8 +1,30 @@
-/* Date range filter */
+/* Date range filter bar */
 .ept-date-filter {
     margin: 16px 0;
     display: flex;
-    gap: 4px;
+    align-items: center;
+    gap: 10px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    padding: 10px 16px;
+}
+
+.ept-date-filter label {
+    font-size: 13px;
+    font-weight: 500;
+    color: #787c82;
+}
+
+.ept-date-filter input[type="date"] {
+    padding: 4px 8px;
+    height: 32px;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    font-size: 13px;
+    color: #2c3338;
+    background: #fff;
+    box-sizing: border-box;
 }
 
 /* Summary stat cards */
@@ -59,40 +81,104 @@
     gap: 20px;
 }
 
-.ept-dashboard-grid .postbox {
+/* Section cards */
+.ept-section {
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.ept-section-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1d2327;
     margin: 0;
+    padding: 14px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
-.ept-dashboard-grid .hndle {
-    cursor: default;
-    padding: 10px 16px;
-}
-
-.ept-dashboard-grid .hndle .dashicons {
+.ept-section-title .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
+    color: #a7aaad;
+}
+
+/* Custom table */
+.ept-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.ept-table thead th {
+    text-align: left;
+    padding: 10px 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
     color: #787c82;
-    vertical-align: text-bottom;
-    margin-right: 4px;
+    background: #f9f9f9;
+    border-bottom: 1px solid #e0e0e0;
 }
 
-.ept-dashboard-grid .inside {
-    margin: 0;
-    padding: 0 16px 16px;
+.ept-table tbody td {
+    padding: 12px 20px;
+    color: #1d2327;
+    border-bottom: 1px solid #f0f0f1;
+    vertical-align: middle;
 }
 
-/* Table tweaks */
-.ept-dashboard-grid .widefat td,
-.ept-dashboard-grid .widefat th {
-    padding: 10px 10px;
+.ept-table tbody tr:last-child td {
+    border-bottom: none;
 }
 
-.ept-dashboard-grid .widefat code {
+.ept-table tbody tr:hover td {
+    background: #f6f7f7;
+}
+
+/* Numeric columns — right-aligned */
+.ept-col-num {
+    text-align: right !important;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Links in table */
+.ept-table a {
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.ept-table a:hover {
+    color: #135e96;
+    text-decoration: underline;
+}
+
+/* Code / tag styling */
+.ept-table code {
     font-size: 12px;
+    font-family: Menlo, Consolas, Monaco, monospace;
     background: #f0f0f1;
-    padding: 2px 6px;
+    padding: 3px 7px;
     border-radius: 3px;
+    color: #50575e;
+}
+
+/* Badge for event type */
+.ept-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: #f0f0f1;
+    color: #50575e;
+    text-transform: capitalize;
 }
 
 /* Active filter */
@@ -100,11 +186,9 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 8px 12px;
-    margin-bottom: 12px;
+    padding: 8px 20px;
     background: #f0f6fc;
-    border: 1px solid #c3c4c7;
-    border-radius: 3px;
+    border-bottom: 1px solid #e0e0e0;
     font-size: 13px;
 }
 
@@ -120,8 +204,9 @@
 
 /* Pagination */
 .ept-pagination {
-    padding: 12px 0 4px;
+    padding: 12px 20px;
     text-align: right;
+    border-top: 1px solid #f0f0f1;
 }
 
 .ept-pagination .page-numbers {
@@ -158,7 +243,7 @@
 /* Empty state */
 .ept-empty-state {
     text-align: center;
-    padding: 30px 20px;
+    padding: 40px 20px;
     color: #787c82;
 }
 
@@ -166,7 +251,7 @@
     font-size: 36px;
     width: 36px;
     height: 36px;
-    color: #c3c4c7;
+    color: #dcdcde;
     display: block;
     margin: 0 auto 10px;
 }

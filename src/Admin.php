@@ -54,28 +54,39 @@ class Admin
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
 
-        $range = sanitize_text_field($_GET['range'] ?? '7');
-        if (!in_array($range, ['1', '7', '30'], true)) {
-            $range = '7';
+        // Date range — default to last 7 days
+        $today    = gmdate('Y-m-d');
+        $dateFrom = sanitize_text_field($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days')));
+        $dateTo   = sanitize_text_field($_GET['date_to'] ?? $today);
+
+        // Validate date format
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
+            $dateFrom = gmdate('Y-m-d', strtotime('-6 days'));
         }
-        $days = (int) $range;
+        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateTo)) {
+            $dateTo = $today;
+        }
+
+        // SQL boundaries: from start of dateFrom to start of day after dateTo
+        $sqlFrom = $dateFrom . ' 00:00:00';
+        $sqlTo   = gmdate('Y-m-d', strtotime($dateTo . ' +1 day')) . ' 00:00:00';
 
         // Pagination
         $visitPage = max(1, (int) ($_GET['vpage'] ?? 1));
         $eventPage = max(1, (int) ($_GET['epage'] ?? 1));
 
-        // Summary totals
-        $visitSummary = Database::getVisitSummary($days);
-        $eventSummary = Database::getEventSummary($days);
-
         // URL filter for events
         $filterUrl = isset($_GET['filter_url']) ? sanitize_text_field($_GET['filter_url']) : '';
 
-        // Paginated table data
-        $visitStats      = Database::getVisitStats($days, self::PER_PAGE, $visitPage);
-        $visitTotalPages = (int) ceil(Database::getVisitStatsCount($days) / self::PER_PAGE);
+        // Summary totals
+        $visitSummary = Database::getVisitSummary($sqlFrom, $sqlTo);
+        $eventSummary = Database::getEventSummary($sqlFrom, $sqlTo);
 
-        $eventStats      = Database::getEventStats($days, self::PER_PAGE, $eventPage, $filterUrl);
+        // Paginated table data
+        $visitStats      = Database::getVisitStats($sqlFrom, $sqlTo, self::PER_PAGE, $visitPage);
+        $visitTotalPages = (int) ceil(Database::getVisitStatsCount($sqlFrom, $sqlTo) / self::PER_PAGE);
+
+        $eventStats      = Database::getEventStats($sqlFrom, $sqlTo, self::PER_PAGE, $eventPage, $filterUrl);
         $eventTotalPages = (int) ceil(Database::getEventStatsCount($filterUrl) / self::PER_PAGE);
 
         include EPT_PLUGIN_DIR . 'templates/admin-dashboard.php';

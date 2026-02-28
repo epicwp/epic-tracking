@@ -1,0 +1,23 @@
+.ept-date-filter {
+    margin: 16px 0;
+    display: flex;
+    gap: 4px;
+}
+
+.ept-dashboard-grid {
+    display: grid;
+    gap: 20px;
+}
+
+.ept-dashboard-grid .postbox {
+    margin: 0;
+}
+
+.ept-dashboard-grid .hndle {
+    cursor: default;
+}
+
+.ept-dashboard-grid .inside {
+    margin: 0;
+    padding: 0 12px 12px;
+}

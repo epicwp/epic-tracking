@@ -1,0 +1,13 @@
+{
+    "name": "epicwpsolutions/epic-tracking",
+    "description": "Lightweight visit and event tracking for WordPress",
+    "type": "wordpress-plugin",
+    "autoload": {
+        "psr-4": {
+            "EpicTracking\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.4"
+    }
+}

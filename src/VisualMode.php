@@ -31,10 +31,10 @@ class VisualMode
 
         $adminBar->add_node([
             'id'    => 'epic-tracking',
-            'title' => 'Epic Tracking',
+            'title' => 'Edit Tracking',
             'href'  => $visualUrl,
             'meta'  => [
-                'title' => 'Open Epic Tracking Visual Mode',
+                'title' => 'Set up event tracking on this page',
             ],
         ]);
     }
@@ -56,7 +56,8 @@ class VisualMode
 
         $exitUrl = remove_query_arg('ept_visual_mode');
 
-        wp_enqueue_style('ept-visual-mode', EPT_PLUGIN_URL . 'assets/css/visual-mode.css', [], EPT_VERSION);
+        wp_enqueue_style('dashicons');
+        wp_enqueue_style('ept-visual-mode', EPT_PLUGIN_URL . 'assets/css/visual-mode.css', ['dashicons'], EPT_VERSION);
         wp_enqueue_script('ept-visual-mode', EPT_PLUGIN_URL . 'assets/js/visual-mode.js', [], EPT_VERSION, true);
         wp_localize_script('ept-visual-mode', 'eptVisualConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),

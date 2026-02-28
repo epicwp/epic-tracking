@@ -141,40 +141,110 @@ class Database
         ]);
     }
 
-    public static function getVisitStats(string $dateFrom, string $dateTo): array
+    public static function getVisitSummary(int $days): array
     {
         global $wpdb;
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT COUNT(*) as total_visits,
+                        COUNT(DISTINCT visitor_id) as unique_visitors
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
+                $days
+            ),
+            ARRAY_A
+        );
+        return $row ?: ['total_visits' => 0, 'unique_visitors' => 0];
+    }
+
+    public static function getVisitStatsCount(int $days): int
+    {
+        global $wpdb;
+        return (int) $wpdb->get_var(
+            $wpdb->prepare(
+                "SELECT COUNT(DISTINCT page_url)
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
+                $days
+            )
+        );
+    }
+
+    public static function getVisitStats(int $days, int $perPage = 20, int $page = 1): array
+    {
+        global $wpdb;
+        $offset = ($page - 1) * $perPage;
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT page_url,
                         COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
                  FROM {$wpdb->prefix}ept_visits
-                 WHERE created_at BETWEEN %s AND %s
+                 WHERE created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
                  GROUP BY page_url
-                 ORDER BY total_visits DESC",
-                $dateFrom,
-                $dateTo
+                 ORDER BY total_visits DESC
+                 LIMIT %d OFFSET %d",
+                $days, $perPage, $offset
             ),
             ARRAY_A
         );
     }
 
-    public static function getEventStats(string $dateFrom, string $dateTo): array
+    public static function getEventSummary(int $days): array
     {
         global $wpdb;
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT COUNT(l.id) as total_triggers,
+                        COUNT(DISTINCT l.visitor_id) as unique_visitors
+                 FROM {$wpdb->prefix}ept_event_log l
+                 WHERE l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)",
+                $days
+            ),
+            ARRAY_A
+        );
+        return $row ?: ['total_triggers' => 0, 'unique_visitors' => 0];
+    }
+
+    public static function getEventStatsCount(string $pageUrl = ''): int
+    {
+        global $wpdb;
+        if ($pageUrl !== '') {
+            return (int) $wpdb->get_var(
+                $wpdb->prepare(
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}ept_events WHERE page_url = %s",
+                    $pageUrl
+                )
+            );
+        }
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}ept_events");
+    }
+
+    public static function getEventStats(int $days, int $perPage = 20, int $page = 1, string $pageUrl = ''): array
+    {
+        global $wpdb;
+        $offset = ($page - 1) * $perPage;
+        $where = '';
+        $params = [$days];
+        if ($pageUrl !== '') {
+            $where = 'WHERE e.page_url = %s';
+            $params[] = $pageUrl;
+        }
+        $params[] = $perPage;
+        $params[] = $offset;
         return $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT e.id, e.reference_name, e.event_tag, e.page_url,
-                        COUNT(l.id) as total_clicks,
-                        COUNT(DISTINCT l.visitor_id) as unique_clickers
+                "SELECT e.id, e.reference_name, e.event_tag, e.event_type, e.page_url,
+                        COUNT(l.id) as total_triggers,
+                        COUNT(DISTINCT l.visitor_id) as unique_visitors
                  FROM {$wpdb->prefix}ept_events e
                  LEFT JOIN {$wpdb->prefix}ept_event_log l ON e.id = l.event_id
-                    AND l.created_at BETWEEN %s AND %s
+                    AND l.created_at >= DATE_SUB(NOW(), INTERVAL %d DAY)
+                 $where
                  GROUP BY e.id
-                 ORDER BY total_clicks DESC",
-                $dateFrom,
-                $dateTo
+                 ORDER BY total_triggers DESC
+                 LIMIT %d OFFSET %d",
+                $params
             ),
             ARRAY_A
         );

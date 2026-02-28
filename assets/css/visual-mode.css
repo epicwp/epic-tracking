@@ -3,7 +3,7 @@ body.ept-visual-mode-active {
     margin-right: 360px !important;
 }
 
-/* Sidebar — fixed right panel, WP native look */
+/* Sidebar — fixed right panel */
 #ept-visual-sidebar {
     position: fixed;
     top: 0;
@@ -35,11 +35,12 @@ body.admin-bar #ept-visual-sidebar {
     }
 }
 
+/* --- Header --- */
 .ept-sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 16px;
+    padding: 14px 16px;
     background: #fff;
     border-bottom: 1px solid #c3c4c7;
     flex-shrink: 0;
@@ -49,20 +50,39 @@ body.admin-bar #ept-visual-sidebar {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
+    color: #1d2327;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ept-sidebar-header h2 .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+    color: #2271b1;
 }
 
 .ept-close-btn {
-    font-size: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
     text-decoration: none;
     color: #787c82;
     line-height: 1;
-    padding: 4px;
+    border-radius: 4px;
+    transition: background 0.1s, color 0.1s;
 }
 
 .ept-close-btn:hover {
+    background: #f0f0f1;
     color: #d63638;
 }
 
+/* --- Content area --- */
 .ept-sidebar-content {
     padding: 16px;
     flex: 1;
@@ -70,66 +90,174 @@ body.admin-bar #ept-visual-sidebar {
 }
 
 .ept-sidebar-content h3 {
-    font-size: 13px;
+    font-size: 11px;
     font-weight: 600;
-    margin: 0 0 8px;
-    color: #1d2327;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px;
+    color: #787c82;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.ept-sidebar-content h3 .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
 }
 
 .ept-sidebar-content hr {
     border: none;
-    border-top: 1px solid #c3c4c7;
+    border-top: 1px solid #dcdcde;
     margin: 16px 0;
 }
 
-/* Event list items */
+/* --- Button styles (WP admin CSS not available on frontend) --- */
+#ept-visual-sidebar .ept-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 12px;
+    height: 32px;
+    font-size: 13px;
+    font-weight: 400;
+    font-family: inherit;
+    line-height: 1;
+    text-decoration: none;
+    border: 1px solid #8c8f94;
+    border-radius: 4px;
+    background: #f6f7f7;
+    color: #2c3338;
+    cursor: pointer;
+    transition: background 0.1s, border-color 0.1s, color 0.1s, box-shadow 0.1s;
+    box-sizing: border-box;
+    white-space: nowrap;
+}
+
+#ept-visual-sidebar .ept-btn:hover {
+    background: #f0f0f1;
+    border-color: #8c8f94;
+    color: #1d2327;
+}
+
+#ept-visual-sidebar .ept-btn-primary {
+    background: #2271b1;
+    border-color: #2271b1;
+    color: #fff;
+    font-weight: 500;
+}
+
+#ept-visual-sidebar .ept-btn-primary:hover {
+    background: #135e96;
+    border-color: #135e96;
+    color: #fff;
+}
+
+#ept-visual-sidebar .ept-btn-sm {
+    height: 26px;
+    padding: 0 8px;
+    font-size: 12px;
+}
+
+#ept-visual-sidebar .ept-btn-danger {
+    color: #d63638;
+    border-color: #d63638;
+    background: #fff;
+}
+
+#ept-visual-sidebar .ept-btn-danger:hover {
+    background: #d63638;
+    color: #fff;
+}
+
+#ept-visual-sidebar .ept-btn-full {
+    width: 100%;
+}
+
+/* Dashicons inside buttons */
+#ept-visual-sidebar .ept-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    vertical-align: text-bottom;
+}
+
+#ept-visual-sidebar .ept-btn-sm .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+}
+
+/* --- Select Element primary action --- */
+#ept-select-element {
+    margin-top: 4px;
+}
+
+/* Active selection state */
+.ept-selecting-active #ept-select-element {
+    background: #d63638 !important;
+    border-color: #d63638 !important;
+    color: #fff !important;
+}
+
+/* --- Event list items --- */
 .ept-event-item {
     background: #fff;
-    border: 1px solid #c3c4c7;
-    border-radius: 2px;
-    padding: 10px 12px;
+    border: 1px solid #dcdcde;
+    border-radius: 4px;
+    padding: 12px;
     margin-bottom: 8px;
+    transition: border-color 0.1s;
+}
+
+.ept-event-item:hover {
+    border-color: #8c8f94;
 }
 
 .ept-event-item-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    gap: 8px;
 }
 
 .ept-event-item-name {
     font-weight: 600;
     font-size: 13px;
+    color: #1d2327;
 }
 
 .ept-event-item-tag {
-    color: #787c82;
-    font-size: 12px;
+    flex-shrink: 0;
+    display: inline-block;
+    background: #f0f0f1;
+    color: #50575e;
+    font-size: 11px;
     font-family: monospace;
+    padding: 2px 6px;
+    border-radius: 3px;
 }
 
 .ept-event-item-selector {
     color: #787c82;
     font-size: 11px;
     font-family: monospace;
-    margin-top: 4px;
+    margin-top: 6px;
     word-break: break-all;
+    line-height: 1.4;
 }
 
 .ept-event-item-actions {
-    margin-top: 8px;
+    margin-top: 10px;
+    display: flex;
+    gap: 6px;
 }
 
-.ept-event-item-actions .button {
-    font-size: 11px;
-    min-height: 24px;
-    line-height: 22px;
-    padding: 0 8px;
-}
-
-/* Form styling */
+/* --- Form styling --- */
 .ept-form-group {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .ept-form-group label {
@@ -140,37 +268,47 @@ body.admin-bar #ept-visual-sidebar {
     color: #1d2327;
 }
 
-.ept-form-group .regular-text {
+.ept-form-group input[type="text"] {
     width: 100%;
     font-size: 13px;
-    padding: 4px 8px;
+    font-family: inherit;
+    padding: 6px 10px;
+    height: 32px;
     border: 1px solid #8c8f94;
     border-radius: 4px;
     box-sizing: border-box;
+    color: #2c3338;
+    background: #fff;
+    transition: border-color 0.1s, box-shadow 0.1s;
+}
+
+.ept-form-group input[type="text"]:focus {
+    border-color: #2271b1;
+    box-shadow: 0 0 0 1px #2271b1;
+    outline: none;
+}
+
+.ept-form-group input[type="text"][readonly] {
+    background: #f6f7f7;
+    color: #50575e;
 }
 
 .ept-form-actions {
     display: flex;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 14px;
 }
 
-/* Selection mode indicator */
-.ept-selecting-active #ept-select-element {
-    background: #d63638;
-    border-color: #d63638;
-    color: #fff;
-}
-
-/* Highlight overlay for element hover during selection */
+/* --- Highlight overlay for element hover during selection --- */
 #ept-highlight-overlay {
     position: absolute;
-    background: rgba(0, 124, 186, 0.15);
-    border: 2px solid #007cba;
+    background: rgba(0, 124, 186, 0.12);
+    border: 2px solid #2271b1;
     pointer-events: none;
     z-index: 99998;
     transition: all 0.1s ease;
     box-sizing: border-box;
+    border-radius: 2px;
 }
 
 /* Prevent page interactions during selection */
@@ -178,12 +316,16 @@ body.ept-selecting-active *:not(#ept-visual-sidebar):not(#ept-visual-sidebar *):
     cursor: crosshair !important;
 }
 
-/* No events message */
+/* --- No events message --- */
 .ept-no-events {
     color: #787c82;
     font-style: italic;
+    text-align: center;
+    padding: 20px 0;
 }
 
 .ept-loading {
     color: #787c82;
+    text-align: center;
+    padding: 20px 0;
 }

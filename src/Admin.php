@@ -13,8 +13,8 @@ class Admin
     public static function addMenuPages(): void
     {
         add_menu_page(
-            'Epic Tracking',
-            'Epic Tracking',
+            'Tracking',
+            'Tracking',
             'manage_options',
             'epic-tracking',
             [self::class, 'renderDashboard'],
@@ -48,6 +48,8 @@ class Admin
         return $output;
     }
 
+    const PER_PAGE = 20;
+
     public static function renderDashboard(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
@@ -56,22 +58,25 @@ class Admin
         if (!in_array($range, ['1', '7', '30'], true)) {
             $range = '7';
         }
+        $days = (int) $range;
 
-        $dateTo = wp_date('Y-m-d H:i:s');
-        switch ($range) {
-            case '1':
-                $dateFrom = wp_date('Y-m-d 00:00:00', strtotime('-1 day'));
-                break;
-            case '30':
-                $dateFrom = wp_date('Y-m-d 00:00:00', strtotime('-30 days'));
-                break;
-            default:
-                $dateFrom = wp_date('Y-m-d 00:00:00', strtotime('-7 days'));
-                break;
-        }
+        // Pagination
+        $visitPage = max(1, (int) ($_GET['vpage'] ?? 1));
+        $eventPage = max(1, (int) ($_GET['epage'] ?? 1));
 
-        $visitStats = Database::getVisitStats($dateFrom, $dateTo);
-        $eventStats = Database::getEventStats($dateFrom, $dateTo);
+        // Summary totals
+        $visitSummary = Database::getVisitSummary($days);
+        $eventSummary = Database::getEventSummary($days);
+
+        // URL filter for events
+        $filterUrl = isset($_GET['filter_url']) ? sanitize_text_field($_GET['filter_url']) : '';
+
+        // Paginated table data
+        $visitStats      = Database::getVisitStats($days, self::PER_PAGE, $visitPage);
+        $visitTotalPages = (int) ceil(Database::getVisitStatsCount($days) / self::PER_PAGE);
+
+        $eventStats      = Database::getEventStats($days, self::PER_PAGE, $eventPage, $filterUrl);
+        $eventTotalPages = (int) ceil(Database::getEventStatsCount($filterUrl) / self::PER_PAGE);
 
         include EPT_PLUGIN_DIR . 'templates/admin-dashboard.php';
     }

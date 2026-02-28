@@ -4,22 +4,86 @@
     if (typeof eptVisualConfig === 'undefined') return;
 
     var config = eptVisualConfig;
-    var iframe = document.getElementById('ept-visual-iframe');
-    var sidebar = document.getElementById('ept-visual-sidebar');
-    var eventsContainer = document.getElementById('ept-events-container');
-    var selectBtn = document.getElementById('ept-select-element');
-    var eventForm = document.getElementById('ept-event-form');
-    var selectorInput = document.getElementById('ept-selector');
-    var referenceInput = document.getElementById('ept-reference-name');
-    var eventTagInput = document.getElementById('ept-event-tag');
-    var saveBtn = document.getElementById('ept-save-event');
-    var cancelBtn = document.getElementById('ept-cancel-event');
-
     var isSelecting = false;
     var highlightOverlay = null;
+    var sidebar = null;
+    var eventsContainer = null;
+    var eventForm = null;
+    var selectorInput = null;
+    var referenceInput = null;
+    var eventTagInput = null;
+    var selectBtn = null;
 
-    // --- Set iframe src ---
-    iframe.src = config.targetUrl;
+    // --- Build sidebar UI ---
+    function buildSidebar() {
+        sidebar = document.createElement('div');
+        sidebar.id = 'ept-visual-sidebar';
+        sidebar.innerHTML =
+            '<div class="ept-sidebar-header">'
+            + '<h2>Epic Tracking</h2>'
+            + '<a href="' + escAttr(config.exitUrl) + '" class="ept-close-btn">&times;</a>'
+            + '</div>'
+            + '<div class="ept-sidebar-content">'
+            + '<div id="ept-events-list">'
+            + '<h3>Configured Events</h3>'
+            + '<div id="ept-events-container">'
+            + '<p class="ept-loading">Loading events...</p>'
+            + '</div>'
+            + '</div>'
+            + '<hr>'
+            + '<button id="ept-select-element" class="button button-primary">Select Element</button>'
+            + '<div id="ept-event-form" style="display:none;">'
+            + '<h3>Configure Event</h3>'
+            + '<div class="ept-form-group">'
+            + '<label for="ept-selector">Selector</label>'
+            + '<input type="text" id="ept-selector" class="regular-text" readonly>'
+            + '</div>'
+            + '<div class="ept-form-group">'
+            + '<label for="ept-reference-name">Reference Name</label>'
+            + '<input type="text" id="ept-reference-name" class="regular-text" placeholder="e.g. CTA Button Hero">'
+            + '</div>'
+            + '<div class="ept-form-group">'
+            + '<label for="ept-event-tag">Event Tag</label>'
+            + '<input type="text" id="ept-event-tag" class="regular-text" placeholder="e.g. cta_hero_click">'
+            + '</div>'
+            + '<div class="ept-form-actions">'
+            + '<button id="ept-save-event" class="button button-primary">Save Event</button>'
+            + '<button id="ept-cancel-event" class="button">Cancel</button>'
+            + '</div>'
+            + '</div>'
+            + '</div>';
+
+        document.body.appendChild(sidebar);
+        document.body.classList.add('ept-visual-mode-active');
+
+        // Cache references
+        eventsContainer = document.getElementById('ept-events-container');
+        eventForm = document.getElementById('ept-event-form');
+        selectorInput = document.getElementById('ept-selector');
+        referenceInput = document.getElementById('ept-reference-name');
+        eventTagInput = document.getElementById('ept-event-tag');
+        selectBtn = document.getElementById('ept-select-element');
+
+        // Bind sidebar buttons
+        selectBtn.addEventListener('click', function () {
+            if (isSelecting) {
+                stopSelecting();
+            } else {
+                startSelecting();
+            }
+        });
+
+        document.getElementById('ept-save-event').addEventListener('click', saveEvent);
+        document.getElementById('ept-cancel-event').addEventListener('click', function () {
+            eventForm.style.display = 'none';
+        });
+
+        // Create highlight overlay for hover effect
+        highlightOverlay = document.createElement('div');
+        highlightOverlay.id = 'ept-highlight-overlay';
+        highlightOverlay.style.display = 'none';
+        document.body.appendChild(highlightOverlay);
+    }
 
     // --- Load events ---
     function loadEvents() {
@@ -69,69 +133,50 @@
         // Bind highlight buttons
         eventsContainer.querySelectorAll('.ept-highlight-event').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                highlightInIframe(this.getAttribute('data-selector'));
+                highlightElement(this.getAttribute('data-selector'));
             });
         });
     }
 
     // --- Element selection ---
-    selectBtn.addEventListener('click', function () {
-        if (isSelecting) {
-            stopSelecting();
-        } else {
-            startSelecting();
-        }
-    });
-
     function startSelecting() {
         isSelecting = true;
         selectBtn.textContent = 'Cancel Selection';
         document.body.classList.add('ept-selecting-active');
 
-        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-        // Create overlay element in iframe
-        highlightOverlay = iframeDoc.createElement('div');
-        highlightOverlay.id = 'ept-highlight-overlay';
-        highlightOverlay.style.cssText = 'position:absolute;background:rgba(0,124,186,0.15);border:2px solid #007cba;pointer-events:none;z-index:999999;transition:all 0.1s ease;display:none;';
-        iframeDoc.body.appendChild(highlightOverlay);
-
-        iframeDoc.addEventListener('mouseover', onIframeMouseOver);
-        iframeDoc.addEventListener('click', onIframeClick);
+        document.addEventListener('mouseover', onMouseOver, true);
+        document.addEventListener('click', onClick, true);
     }
 
     function stopSelecting() {
         isSelecting = false;
         selectBtn.textContent = 'Select Element';
         document.body.classList.remove('ept-selecting-active');
+        highlightOverlay.style.display = 'none';
 
-        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        iframeDoc.removeEventListener('mouseover', onIframeMouseOver);
-        iframeDoc.removeEventListener('click', onIframeClick);
-
-        if (highlightOverlay && highlightOverlay.parentNode) {
-            highlightOverlay.parentNode.removeChild(highlightOverlay);
-        }
-        highlightOverlay = null;
+        document.removeEventListener('mouseover', onMouseOver, true);
+        document.removeEventListener('click', onClick, true);
     }
 
-    function onIframeMouseOver(e) {
-        if (!highlightOverlay) return;
-        var rect = e.target.getBoundingClientRect();
-        var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-        var scrollX = iframeDoc.documentElement.scrollLeft || iframeDoc.body.scrollLeft;
-        var scrollY = iframeDoc.documentElement.scrollTop || iframeDoc.body.scrollTop;
+    function onMouseOver(e) {
+        // Ignore events on sidebar and overlay
+        if (isSidebarElement(e.target)) return;
 
+        var rect = e.target.getBoundingClientRect();
         highlightOverlay.style.display = 'block';
-        highlightOverlay.style.top = (rect.top + scrollY) + 'px';
-        highlightOverlay.style.left = (rect.left + scrollX) + 'px';
+        highlightOverlay.style.top = (rect.top + window.scrollY) + 'px';
+        highlightOverlay.style.left = (rect.left + window.scrollX) + 'px';
         highlightOverlay.style.width = rect.width + 'px';
         highlightOverlay.style.height = rect.height + 'px';
     }
 
-    function onIframeClick(e) {
+    function onClick(e) {
+        // Ignore clicks on sidebar and overlay
+        if (isSidebarElement(e.target)) return;
+
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
 
         var selector = generateSelector(e.target);
         selectorInput.value = selector;
@@ -141,6 +186,14 @@
         referenceInput.focus();
 
         stopSelecting();
+
+        return false;
+    }
+
+    function isSidebarElement(el) {
+        return el.closest('#ept-visual-sidebar') !== null
+            || el.closest('#ept-highlight-overlay') !== null
+            || el.closest('#wpadminbar') !== null;
     }
 
     // --- Selector generation ---
@@ -150,8 +203,8 @@
             return '[data-id="' + el.getAttribute('data-id') + '"]';
         }
 
-        // Priority 2: HTML id
-        if (el.id && !el.id.match(/^\d/)) {
+        // Priority 2: HTML id (skip WP/Elementor internal IDs)
+        if (el.id && !el.id.match(/^\d/) && !el.id.match(/^(wp-|elementor-)/)) {
             return '#' + CSS.escape(el.id);
         }
 
@@ -163,7 +216,7 @@
         var parts = [];
         var current = el;
 
-        while (current && current !== current.ownerDocument.body) {
+        while (current && current !== document.body) {
             var tag = current.tagName.toLowerCase();
 
             // Check for data-id (Elementor)
@@ -173,12 +226,12 @@
             }
 
             // Check for id
-            if (current.id && !current.id.match(/^\d/)) {
+            if (current.id && !current.id.match(/^\d/) && !current.id.match(/^(wp-|elementor-)/)) {
                 parts.unshift('#' + CSS.escape(current.id));
                 break;
             }
 
-            // Use nth-child for disambiguation
+            // Use nth-of-type for disambiguation
             var parent = current.parentElement;
             if (parent) {
                 var siblings = Array.from(parent.children).filter(function (s) {
@@ -198,13 +251,12 @@
     }
 
     // --- Save event ---
-    saveBtn.addEventListener('click', function () {
+    function saveEvent() {
         var referenceName = referenceInput.value.trim();
         var eventTag = eventTagInput.value.trim();
         var selector = selectorInput.value.trim();
 
         if (!referenceName || !eventTag || !selector) {
-            alert('Please fill in all fields.');
             return;
         }
 
@@ -224,11 +276,7 @@
                     loadEvents();
                 }
             });
-    });
-
-    cancelBtn.addEventListener('click', function () {
-        eventForm.style.display = 'none';
-    });
+    }
 
     // --- Delete event ---
     function deleteEvent(id) {
@@ -248,11 +296,10 @@
             });
     }
 
-    // --- Highlight element in iframe ---
-    function highlightInIframe(selector) {
+    // --- Highlight element ---
+    function highlightElement(selector) {
         try {
-            var iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-            var el = iframeDoc.querySelector(selector);
+            var el = document.querySelector(selector);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 el.style.outline = '3px solid #007cba';
@@ -263,7 +310,7 @@
                 }, 2000);
             }
         } catch (e) {
-            // Cross-origin or selector error
+            // Invalid selector
         }
     }
 
@@ -279,7 +326,6 @@
     }
 
     // --- Init ---
-    iframe.addEventListener('load', function () {
-        loadEvents();
-    });
+    buildSidebar();
+    loadEvents();
 })();

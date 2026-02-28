@@ -18,7 +18,10 @@ class Tracker
 
     public static function enqueueTracker(): void
     {
-        // Don't track excluded roles
+        // Don't track in visual mode or excluded roles
+        if (isset($_GET['ept_visual_mode'])) {
+            return;
+        }
         if (self::isExcludedUser()) {
             return;
         }

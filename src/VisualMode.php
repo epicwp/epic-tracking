@@ -10,8 +10,10 @@ class VisualMode
             add_action('admin_bar_menu', [self::class, 'addAdminBarButton'], 100);
         }
 
-        add_action('template_redirect', [self::class, 'maybeRenderVisualMode']);
+        // Enqueue visual mode assets when ?ept_visual_mode=1
+        add_action('wp_enqueue_scripts', [self::class, 'maybeEnqueueVisualMode']);
 
+        // AJAX endpoints for event management
         add_action('wp_ajax_ept_save_event', [self::class, 'handleSaveEvent']);
         add_action('wp_ajax_ept_update_event', [self::class, 'handleUpdateEvent']);
         add_action('wp_ajax_ept_delete_event', [self::class, 'handleDeleteEvent']);
@@ -37,29 +39,31 @@ class VisualMode
         ]);
     }
 
-    public static function maybeRenderVisualMode(): void
+    public static function maybeEnqueueVisualMode(): void
     {
         if (!isset($_GET['ept_visual_mode']) || $_GET['ept_visual_mode'] !== '1') {
             return;
         }
 
         if (!current_user_can('manage_options')) {
-            wp_die('Unauthorized');
+            return;
         }
 
-        $targetUrl = remove_query_arg('ept_visual_mode');
+        $pageUrl = wp_parse_url(
+            remove_query_arg('ept_visual_mode', home_url(add_query_arg(null, null))),
+            PHP_URL_PATH
+        ) ?: '/';
+
+        $exitUrl = remove_query_arg('ept_visual_mode');
 
         wp_enqueue_style('ept-visual-mode', EPT_PLUGIN_URL . 'assets/css/visual-mode.css', [], EPT_VERSION);
         wp_enqueue_script('ept-visual-mode', EPT_PLUGIN_URL . 'assets/js/visual-mode.js', [], EPT_VERSION, true);
         wp_localize_script('ept-visual-mode', 'eptVisualConfig', [
-            'ajaxUrl'   => admin_url('admin-ajax.php'),
-            'nonce'     => wp_create_nonce('ept_visual_mode'),
-            'targetUrl' => $targetUrl,
-            'pageUrl'   => wp_parse_url($targetUrl, PHP_URL_PATH) ?: '/',
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('ept_visual_mode'),
+            'pageUrl' => $pageUrl,
+            'exitUrl' => $exitUrl,
         ]);
-
-        include EPT_PLUGIN_DIR . 'templates/visual-mode.php';
-        exit;
     }
 
     public static function handleSaveEvent(): void
@@ -67,6 +71,7 @@ class VisualMode
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized', 403);
+            return;
         }
 
         $id = Database::saveEvent([
@@ -85,11 +90,13 @@ class VisualMode
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized', 403);
+            return;
         }
 
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) {
             wp_send_json_error('Missing event ID', 400);
+            return;
         }
 
         Database::updateEvent($id, [
@@ -106,11 +113,13 @@ class VisualMode
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized', 403);
+            return;
         }
 
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) {
             wp_send_json_error('Missing event ID', 400);
+            return;
         }
 
         Database::deleteEvent($id);
@@ -122,6 +131,7 @@ class VisualMode
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error('Unauthorized', 403);
+            return;
         }
 
         $pageUrl = sanitize_text_field($_POST['page_url'] ?? '');

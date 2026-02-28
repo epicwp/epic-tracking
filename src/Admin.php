@@ -53,18 +53,20 @@ class Admin
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
 
         $range = sanitize_text_field($_GET['range'] ?? '7');
-        $dateTo = current_time('mysql');
+        if (!in_array($range, ['1', '7', '30'], true)) {
+            $range = '7';
+        }
+
+        $dateTo = wp_date('Y-m-d H:i:s');
         switch ($range) {
             case '1':
-                $dateFrom = gmdate('Y-m-d 00:00:00', strtotime('-1 day', current_time('timestamp')));
+                $dateFrom = wp_date('Y-m-d 00:00:00', strtotime('-1 day'));
                 break;
             case '30':
-                $dateFrom = gmdate('Y-m-d 00:00:00', strtotime('-30 days', current_time('timestamp')));
+                $dateFrom = wp_date('Y-m-d 00:00:00', strtotime('-30 days'));
                 break;
-            case '7':
             default:
-                $dateFrom = gmdate('Y-m-d 00:00:00', strtotime('-7 days', current_time('timestamp')));
-                $range = '7';
+                $dateFrom = wp_date('Y-m-d 00:00:00', strtotime('-7 days'));
                 break;
         }
 

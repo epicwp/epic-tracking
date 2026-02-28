@@ -58,10 +58,12 @@ class Tracker
 
         if (empty($visitorId) || empty($pageUrl)) {
             wp_send_json_error('Missing required fields', 400);
+            return;
         }
 
         if (BotFilter::isBot($userAgent)) {
-            wp_send_json_success(); // Silently ignore bots
+            wp_send_json_success();
+            return;
         }
 
         Database::logVisit($visitorId, $pageUrl, $referrer, $userAgent);
@@ -77,10 +79,12 @@ class Tracker
 
         if (empty($eventId) || empty($visitorId) || empty($pageUrl)) {
             wp_send_json_error('Missing required fields', 400);
+            return;
         }
 
         if (BotFilter::isBot($userAgent)) {
             wp_send_json_success();
+            return;
         }
 
         Database::logEvent($eventId, $visitorId, $pageUrl);

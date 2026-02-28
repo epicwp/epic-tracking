@@ -17,7 +17,7 @@ class BotFilter
     {
         $ua = strtolower($userAgent);
         foreach (self::$botPatterns as $pattern) {
-            if (str_contains($ua, $pattern)) {
+            if (strpos($ua, $pattern) !== false) {
                 return true;
             }
         }

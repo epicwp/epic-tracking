@@ -71,7 +71,7 @@ class VisualMode
 
         $id = Database::saveEvent([
             'page_url'       => sanitize_text_field($_POST['page_url'] ?? ''),
-            'selector'       => sanitize_text_field($_POST['selector'] ?? ''),
+            'selector'       => wp_unslash($_POST['selector'] ?? ''),
             'reference_name' => sanitize_text_field($_POST['reference_name'] ?? ''),
             'event_tag'      => sanitize_text_field($_POST['event_tag'] ?? ''),
             'event_type'     => 'click',
@@ -95,7 +95,7 @@ class VisualMode
         Database::updateEvent($id, [
             'reference_name' => sanitize_text_field($_POST['reference_name'] ?? ''),
             'event_tag'      => sanitize_text_field($_POST['event_tag'] ?? ''),
-            'selector'       => sanitize_text_field($_POST['selector'] ?? ''),
+            'selector'       => wp_unslash($_POST['selector'] ?? ''),
         ]);
 
         wp_send_json_success();

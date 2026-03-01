@@ -1,6 +1,6 @@
-# Epic Tracking
+# Epic Tracking – Easy Event Tracking for WordPress
 
-Lightweight visit and event tracking for WordPress. Track page views, button clicks, form submissions, and more — all from your WordPress admin, with no external services.
+Easy event tracking for WordPress. Track clicks, form submissions, and page views — no code, no cookies, no third-party scripts.
 
 ## Visual event editor
 

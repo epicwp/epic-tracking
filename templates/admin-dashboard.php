@@ -79,31 +79,16 @@
     </div>
 
     <div class="ept-section" style="margin-bottom: 20px;">
-        <h2 class="ept-section-title"><span class="dashicons dashicons-calendar-alt"></span> Daily Breakdown</h2>
+        <h2 class="ept-section-title"><span class="dashicons dashicons-chart-area"></span> Daily Breakdown</h2>
         <?php if (empty($dailyVisits)) : ?>
             <div class="ept-empty-state">
-                <span class="dashicons dashicons-calendar-alt"></span>
+                <span class="dashicons dashicons-chart-area"></span>
                 <p>No daily data for this period.</p>
             </div>
         <?php else : ?>
-            <table class="ept-table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th class="ept-col-num">Total Visits</th>
-                        <th class="ept-col-num">Unique Visitors</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($dailyVisits as $day) : ?>
-                        <tr>
-                            <td><?php echo esc_html(gmdate('M j, Y', strtotime($day['visit_date']))); ?></td>
-                            <td class="ept-col-num"><?php echo esc_html(number_format_i18n($day['total_visits'])); ?></td>
-                            <td class="ept-col-num"><?php echo esc_html(number_format_i18n($day['unique_visitors'])); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="ept-chart" data-chart="<?php echo esc_attr(wp_json_encode($dailyVisits)); ?>">
+                <canvas></canvas>
+            </div>
         <?php endif; ?>
     </div>
 

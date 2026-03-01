@@ -114,6 +114,58 @@
     width: 100%;
 }
 
+/* Daily chart */
+.ept-chart {
+    position: relative;
+    padding: 20px;
+}
+
+.ept-chart canvas {
+    width: 100% !important;
+    height: 280px !important;
+    display: block;
+}
+
+.ept-chart__tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: #1d2327;
+    color: #fff;
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.15s;
+}
+
+.ept-chart__tooltip.is-visible {
+    opacity: 1;
+}
+
+.ept-chart__legend {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.ept-chart__legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: #50575e;
+}
+
+.ept-chart__legend-swatch {
+    width: 12px;
+    height: 3px;
+    border-radius: 2px;
+}
+
 /* Summary stat cards */
 .ept-stats-row {
     display: grid;

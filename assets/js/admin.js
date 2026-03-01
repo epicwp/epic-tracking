@@ -157,5 +157,192 @@
         });
     }
 
-    document.addEventListener('DOMContentLoaded', init);
+    // ── Chart ──────────────────────────────────────────────────────────
+
+    var COLORS = {
+        visits:  { line: '#2271b1', fill: 'rgba(34,113,177,0.08)' },
+        unique:  { line: '#00a32a', fill: 'rgba(0,163,42,0.08)' }
+    };
+
+    function shortDate(str) {
+        var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var d = new Date(str + 'T00:00:00');
+        return months[d.getMonth()] + ' ' + d.getDate();
+    }
+
+    function niceMax(v) {
+        if (v <= 0) return 5;
+        var magnitude = Math.pow(10, Math.floor(Math.log10(v)));
+        var residual = v / magnitude;
+        if (residual <= 1) return magnitude;
+        if (residual <= 2) return 2 * magnitude;
+        if (residual <= 5) return 5 * magnitude;
+        return 10 * magnitude;
+    }
+
+    function drawChart(container) {
+        var data = JSON.parse(container.dataset.chart);
+        if (!data.length) return;
+
+        var canvas = container.querySelector('canvas');
+        var dpr = window.devicePixelRatio || 1;
+
+        // Legend
+        var legend = document.createElement('div');
+        legend.className = 'ept-chart__legend';
+        legend.innerHTML =
+            '<span class="ept-chart__legend-item"><span class="ept-chart__legend-swatch" style="background:' + COLORS.visits.line + '"></span>Total Visits</span>' +
+            '<span class="ept-chart__legend-item"><span class="ept-chart__legend-swatch" style="background:' + COLORS.unique.line + '"></span>Unique Visitors</span>';
+        container.insertBefore(legend, canvas);
+
+        // Tooltip
+        var tooltip = document.createElement('div');
+        tooltip.className = 'ept-chart__tooltip';
+        container.appendChild(tooltip);
+
+        function render() {
+            var rect = canvas.parentElement.getBoundingClientRect();
+            var w = canvas.clientWidth;
+            var h = canvas.clientHeight;
+            canvas.width = w * dpr;
+            canvas.height = h * dpr;
+            var ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+
+            var pad = { top: 10, right: 16, bottom: 32, left: 44 };
+            var cw = w - pad.left - pad.right;
+            var ch = h - pad.top - pad.bottom;
+
+            var visits = data.map(function (d) { return +d.total_visits; });
+            var unique = data.map(function (d) { return +d.unique_visitors; });
+            var maxVal = niceMax(Math.max.apply(null, visits.concat(unique)));
+            var steps = 4;
+
+            // Grid lines + Y labels
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            ctx.font = '11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+            for (var s = 0; s <= steps; s++) {
+                var yVal = (maxVal / steps) * s;
+                var y = pad.top + ch - (ch * (yVal / maxVal));
+                ctx.strokeStyle = '#f0f0f1';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(pad.left, y);
+                ctx.lineTo(w - pad.right, y);
+                ctx.stroke();
+                ctx.fillStyle = '#787c82';
+                ctx.fillText(Math.round(yVal).toString(), pad.left - 8, y);
+            }
+
+            // X labels
+            var n = data.length;
+            var maxLabels = Math.floor(cw / 60);
+            var labelStep = Math.max(1, Math.ceil(n / maxLabels));
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            for (var i = 0; i < n; i++) {
+                if (i % labelStep !== 0 && i !== n - 1) continue;
+                var x = pad.left + (cw * i / (n - 1 || 1));
+                ctx.fillStyle = '#787c82';
+                ctx.fillText(shortDate(data[i].visit_date), x, pad.top + ch + 10);
+            }
+
+            function xPos(i) { return pad.left + (cw * i / (n - 1 || 1)); }
+            function yPos(v) { return pad.top + ch - (ch * (v / maxVal)); }
+
+            // Draw series (fill + line)
+            function drawSeries(values, color) {
+                // Fill
+                ctx.beginPath();
+                ctx.moveTo(xPos(0), yPos(0));
+                for (var i = 0; i < n; i++) ctx.lineTo(xPos(i), yPos(values[i]));
+                ctx.lineTo(xPos(n - 1), yPos(0));
+                ctx.closePath();
+                ctx.fillStyle = color.fill;
+                ctx.fill();
+
+                // Line
+                ctx.beginPath();
+                for (var i = 0; i < n; i++) {
+                    if (i === 0) ctx.moveTo(xPos(i), yPos(values[i]));
+                    else ctx.lineTo(xPos(i), yPos(values[i]));
+                }
+                ctx.strokeStyle = color.line;
+                ctx.lineWidth = 2;
+                ctx.lineJoin = 'round';
+                ctx.stroke();
+            }
+
+            drawSeries(visits, COLORS.visits);
+            drawSeries(unique, COLORS.unique);
+
+            // Dots at data points (only when few points)
+            if (n <= 31) {
+                [{ vals: visits, c: COLORS.visits.line }, { vals: unique, c: COLORS.unique.line }].forEach(function (s) {
+                    for (var i = 0; i < n; i++) {
+                        ctx.beginPath();
+                        ctx.arc(xPos(i), yPos(s.vals[i]), 3, 0, Math.PI * 2);
+                        ctx.fillStyle = '#fff';
+                        ctx.fill();
+                        ctx.strokeStyle = s.c;
+                        ctx.lineWidth = 2;
+                        ctx.stroke();
+                    }
+                });
+            }
+
+            // Store geometry for hover
+            container._chartMeta = { pad: pad, cw: cw, ch: ch, n: n, maxVal: maxVal, xPos: xPos, yPos: yPos, visits: visits, unique: unique };
+        }
+
+        render();
+
+        var resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(render, 100);
+        });
+
+        // Hover tooltip
+        canvas.addEventListener('mousemove', function (e) {
+            var meta = container._chartMeta;
+            if (!meta) return;
+            var canvasRect = canvas.getBoundingClientRect();
+            var mx = e.clientX - canvasRect.left;
+            var idx = Math.round((mx - meta.pad.left) / (meta.cw / (meta.n - 1 || 1)));
+            if (idx < 0 || idx >= meta.n) {
+                tooltip.classList.remove('is-visible');
+                return;
+            }
+            var d = data[idx];
+            tooltip.innerHTML =
+                '<strong>' + shortDate(d.visit_date) + '</strong><br>' +
+                'Visits: ' + d.total_visits + '<br>' +
+                'Unique: ' + d.unique_visitors;
+            tooltip.classList.add('is-visible');
+
+            var tx = meta.xPos(idx);
+            var ty = meta.yPos(meta.visits[idx]);
+            var tw = tooltip.offsetWidth;
+            var left = tx - tw / 2;
+            if (left < 0) left = 0;
+            if (left + tw > canvas.clientWidth) left = canvas.clientWidth - tw;
+            tooltip.style.left = left + 'px';
+            tooltip.style.top = (ty - tooltip.offsetHeight - 10) + 'px';
+        });
+
+        canvas.addEventListener('mouseleave', function () {
+            tooltip.classList.remove('is-visible');
+        });
+    }
+
+    function initCharts() {
+        document.querySelectorAll('.ept-chart').forEach(drawChart);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        init();
+        initCharts();
+    });
 })();

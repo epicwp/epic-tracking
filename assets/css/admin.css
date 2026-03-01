@@ -447,3 +447,49 @@
     color: #135e96;
     text-decoration: underline;
 }
+
+/* View all link in section header */
+.ept-view-all {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 400;
+    color: #2271b1;
+    text-decoration: none;
+}
+
+.ept-view-all:hover {
+    color: #135e96;
+    text-decoration: underline;
+}
+
+/* Sortable table headers */
+.ept-sortable a {
+    color: inherit;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.ept-sortable a:hover {
+    color: #2271b1;
+}
+
+.ept-sortable a::after {
+    content: '\2195';
+    font-size: 10px;
+    opacity: 0.3;
+}
+
+.ept-sort-asc a::after {
+    content: '\2191';
+    opacity: 1;
+    color: #2271b1;
+}
+
+.ept-sort-desc a::after {
+    content: '\2193';
+    opacity: 1;
+    color: #2271b1;
+}

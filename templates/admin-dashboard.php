@@ -94,19 +94,40 @@
 
     <div class="ept-dashboard-grid">
         <div class="ept-section">
-            <h2 class="ept-section-title"><span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Page Visits', 'epic-tracking'); ?></h2>
+            <h2 class="ept-section-title">
+                <span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Page Visits', 'epic-tracking'); ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?' . http_build_query(['page' => 'epic-tracking-all-visits', 'date_from' => $dateFrom, 'date_to' => $dateTo]))); ?>" class="ept-view-all"><?php echo esc_html__('View all', 'epic-tracking'); ?> &rarr;</a>
+            </h2>
             <?php if (empty($visitStats)) : ?>
                 <div class="ept-empty-state">
                     <span class="dashicons dashicons-visibility"></span>
                     <p><?php echo esc_html__('No visit data for this period.', 'epic-tracking'); ?></p>
                 </div>
             <?php else : ?>
+                <?php
+                $visitSortColumns = [
+                    'page_url'        => __('Page', 'epic-tracking'),
+                    'total_visits'    => __('Total Visits', 'epic-tracking'),
+                    'unique_visitors' => __('Unique Visitors', 'epic-tracking'),
+                ];
+                ?>
                 <table class="ept-table">
                     <thead>
                         <tr>
-                            <th><?php echo esc_html__('Page', 'epic-tracking'); ?></th>
-                            <th class="ept-col-num"><?php echo esc_html__('Total Visits', 'epic-tracking'); ?></th>
-                            <th class="ept-col-num"><?php echo esc_html__('Unique Visitors', 'epic-tracking'); ?></th>
+                            <?php foreach ($visitSortColumns as $col => $label) :
+                                $isActive   = ($visitSort === $col);
+                                $nextOrder  = $isActive && $visitOrder === 'DESC' ? 'ASC' : 'DESC';
+                                $sortUrl    = add_query_arg(['vsort' => $col, 'vorder' => $nextOrder, 'vpage' => 1], $requestUri);
+                                $classes    = 'ept-sortable';
+                                if ($col !== 'page_url') {
+                                    $classes .= ' ept-col-num';
+                                }
+                                if ($isActive) {
+                                    $classes .= $visitOrder === 'ASC' ? ' ept-sort-asc' : ' ept-sort-desc';
+                                }
+                            ?>
+                                <th class="<?php echo esc_attr($classes); ?>"><a href="<?php echo esc_url($sortUrl); ?>"><?php echo esc_html($label); ?></a></th>
+                            <?php endforeach; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -144,7 +165,10 @@
         </div>
 
         <div class="ept-section" id="ept-events-section">
-            <h2 class="ept-section-title"><span class="dashicons dashicons-admin-links"></span> <?php echo esc_html__('Events', 'epic-tracking'); ?></h2>
+            <h2 class="ept-section-title">
+                <span class="dashicons dashicons-admin-links"></span> <?php echo esc_html__('Events', 'epic-tracking'); ?>
+                <a href="<?php echo esc_url(admin_url('admin.php?' . http_build_query(['page' => 'epic-tracking-all-events', 'date_from' => $dateFrom, 'date_to' => $dateTo]))); ?>" class="ept-view-all"><?php echo esc_html__('View all', 'epic-tracking'); ?> &rarr;</a>
+            </h2>
             <?php if ($filterUrl !== '') : ?>
                 <div class="ept-active-filter">
                     <?php
@@ -160,14 +184,31 @@
                     <p><?php echo esc_html__('No event data for this period.', 'epic-tracking'); ?></p>
                 </div>
             <?php else : ?>
+                <?php
+                $eventSortColumns = [
+                    'reference_name'  => __('Reference', 'epic-tracking'),
+                    'event_tag'       => __('Event Tag', 'epic-tracking'),
+                    'total_triggers'  => __('Triggers', 'epic-tracking'),
+                    'unique_visitors' => __('Unique Visitors', 'epic-tracking'),
+                ];
+                ?>
                 <table class="ept-table">
                     <thead>
                         <tr>
-                            <th><?php echo esc_html__('Reference', 'epic-tracking'); ?></th>
-                            <th><?php echo esc_html__('Event Tag', 'epic-tracking'); ?></th>
-                            <th><?php echo esc_html__('Type', 'epic-tracking'); ?></th>
-                            <th class="ept-col-num"><?php echo esc_html__('Triggers', 'epic-tracking'); ?></th>
-                            <th class="ept-col-num"><?php echo esc_html__('Unique Visitors', 'epic-tracking'); ?></th>
+                            <?php foreach ($eventSortColumns as $col => $label) :
+                                $isActive   = ($eventSort === $col);
+                                $nextOrder  = $isActive && $eventOrder === 'DESC' ? 'ASC' : 'DESC';
+                                $sortUrl    = add_query_arg(['esort' => $col, 'eorder' => $nextOrder, 'epage' => 1], $requestUri);
+                                $classes    = 'ept-sortable';
+                                if (in_array($col, ['total_triggers', 'unique_visitors'], true)) {
+                                    $classes .= ' ept-col-num';
+                                }
+                                if ($isActive) {
+                                    $classes .= $eventOrder === 'ASC' ? ' ept-sort-asc' : ' ept-sort-desc';
+                                }
+                            ?>
+                                <th class="<?php echo esc_attr($classes); ?>"><a href="<?php echo esc_url($sortUrl); ?>"><?php echo esc_html($label); ?></a></th>
+                            <?php endforeach; ?>
                         </tr>
                     </thead>
                     <tbody>
@@ -175,7 +216,6 @@
                             <tr>
                                 <td><?php echo esc_html($row['reference_name']); ?></td>
                                 <td><code><?php echo esc_html($row['event_tag']); ?></code></td>
-                                <td><span class="ept-badge"><?php echo esc_html($row['event_type']); ?></span></td>
                                 <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['total_triggers'])); ?></td>
                                 <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['unique_visitors'])); ?></td>
                             </tr>

@@ -184,9 +184,14 @@ class Database
         );
     }
 
-    public static function getVisitStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1): array
+    public static function getVisitStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1, string $orderBy = 'total_visits', string $order = 'DESC'): array
     {
         global $wpdb;
+        $allowed = ['page_url', 'total_visits', 'unique_visitors'];
+        if (!in_array($orderBy, $allowed, true)) {
+            $orderBy = 'total_visits';
+        }
+        $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
         $offset = ($page - 1) * $perPage;
         return $wpdb->get_results(
             $wpdb->prepare(
@@ -196,7 +201,7 @@ class Database
                  FROM {$wpdb->prefix}ept_visits
                  WHERE created_at >= %s AND created_at < %s
                  GROUP BY page_url
-                 ORDER BY total_visits DESC
+                 ORDER BY {$orderBy} {$order}
                  LIMIT %d OFFSET %d",
                 $dateFrom, $dateTo, $perPage, $offset
             ),
@@ -235,9 +240,14 @@ class Database
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}ept_events");
     }
 
-    public static function getEventStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1, string $pageUrl = ''): array
+    public static function getEventStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1, string $pageUrl = '', string $orderBy = 'total_triggers', string $order = 'DESC'): array
     {
         global $wpdb;
+        $allowed = ['reference_name', 'event_tag', 'total_triggers', 'unique_visitors'];
+        if (!in_array($orderBy, $allowed, true)) {
+            $orderBy = 'total_triggers';
+        }
+        $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
         $offset = ($page - 1) * $perPage;
         $where = '';
         $params = [$dateFrom, $dateTo];
@@ -257,7 +267,7 @@ class Database
                     AND l.created_at >= %s AND l.created_at < %s
                  $where
                  GROUP BY e.id
-                 ORDER BY total_triggers DESC
+                 ORDER BY {$orderBy} {$order}
                  LIMIT %d OFFSET %d",
                 $params
             ),

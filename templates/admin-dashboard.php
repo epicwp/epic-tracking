@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="wrap">
     <h1><?php echo esc_html__('Dashboard', 'epic-tracking'); ?></h1>
 
@@ -62,19 +67,19 @@
     <div class="ept-stats-row">
         <div class="ept-stat-card">
             <p class="ept-stat-card-label"><span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Total Visits', 'epic-tracking'); ?></p>
-            <p class="ept-stat-card-value"><?php echo number_format_i18n($visitSummary['total_visits']); ?></p>
+            <p class="ept-stat-card-value"><?php echo esc_html(number_format_i18n($visitSummary['total_visits'])); ?></p>
         </div>
         <div class="ept-stat-card">
             <p class="ept-stat-card-label"><span class="dashicons dashicons-groups"></span> <?php echo esc_html__('Unique Visitors', 'epic-tracking'); ?></p>
-            <p class="ept-stat-card-value"><?php echo number_format_i18n($visitSummary['unique_visitors']); ?></p>
+            <p class="ept-stat-card-value"><?php echo esc_html(number_format_i18n($visitSummary['unique_visitors'])); ?></p>
         </div>
         <div class="ept-stat-card">
             <p class="ept-stat-card-label"><span class="dashicons dashicons-admin-links"></span> <?php echo esc_html__('Event Triggers', 'epic-tracking'); ?></p>
-            <p class="ept-stat-card-value"><?php echo number_format_i18n($eventSummary['total_triggers']); ?></p>
+            <p class="ept-stat-card-value"><?php echo esc_html(number_format_i18n($eventSummary['total_triggers'])); ?></p>
         </div>
         <div class="ept-stat-card">
             <p class="ept-stat-card-label"><span class="dashicons dashicons-admin-users"></span> <?php echo esc_html__('Unique Actors', 'epic-tracking'); ?></p>
-            <p class="ept-stat-card-value"><?php echo number_format_i18n($eventSummary['unique_visitors']); ?></p>
+            <p class="ept-stat-card-value"><?php echo esc_html(number_format_i18n($eventSummary['unique_visitors'])); ?></p>
         </div>
     </div>
 
@@ -132,15 +137,15 @@
                     </thead>
                     <tbody>
                         <?php foreach ($visitStats as $row) :
-                            $detailUrl = esc_url(admin_url('admin.php?' . http_build_query([
+                            $detailUrl = admin_url('admin.php?' . http_build_query([
                                 'page'      => 'epic-tracking-page-detail',
                                 'page_url'  => $row['page_url'],
                                 'date_from' => $dateFrom,
                                 'date_to'   => $dateTo,
-                            ])));
+                            ]));
                         ?>
                             <tr>
-                                <td><a href="<?php echo $detailUrl; ?>"><?php echo esc_html($row['page_url']); ?></a></td>
+                                <td><a href="<?php echo esc_url($detailUrl); ?>"><?php echo esc_html($row['page_url']); ?></a></td>
                                 <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['total_visits'])); ?></td>
                                 <td class="ept-col-num"><?php echo esc_html(number_format_i18n($row['unique_visitors'])); ?></td>
                             </tr>
@@ -150,14 +155,14 @@
                 <?php if ($visitTotalPages > 1) : ?>
                     <div class="ept-pagination">
                         <?php
-                        echo paginate_links([
+                        echo wp_kses_post(paginate_links([
                             'base'      => add_query_arg('vpage', '%#%', $requestUri),
                             'format'    => '',
                             'current'   => $visitPage,
                             'total'     => $visitTotalPages,
                             'prev_text' => '&laquo;',
                             'next_text' => '&raquo;',
-                        ]);
+                        ]));
                         ?>
                     </div>
                 <?php endif; ?>
@@ -225,14 +230,14 @@
                 <?php if ($eventTotalPages > 1) : ?>
                     <div class="ept-pagination">
                         <?php
-                        echo paginate_links([
+                        echo wp_kses_post(paginate_links([
                             'base'      => add_query_arg('epage', '%#%', $requestUri),
                             'format'    => '',
                             'current'   => $eventPage,
                             'total'     => $eventTotalPages,
                             'prev_text' => '&laquo;',
                             'next_text' => '&raquo;',
-                        ]);
+                        ]));
                         ?>
                     </div>
                 <?php endif; ?>

@@ -2,6 +2,10 @@
 
 namespace EpicTracking;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class VisualMode
 {
     public static function init(): void

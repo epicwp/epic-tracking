@@ -149,7 +149,7 @@ $country_codes = array(
  */
 function ept_weighted_random( $items ) {
 	$total = array_sum( $items );
-	$rand  = mt_rand( 1, $total );
+	$rand  = wp_rand( 1, $total );
 	$sum   = 0;
 	foreach ( $items as $item => $weight ) {
 		$sum += $weight;
@@ -162,7 +162,7 @@ function ept_weighted_random( $items ) {
 
 // ─── Visits ───────────────────────────────────────────────────────────
 
-$total_visits    = mt_rand( 800, 1200 );
+$total_visits    = wp_rand( 800, 1200 );
 $base_per_day    = $total_visits / 30;
 $visit_rows      = array();
 
@@ -171,7 +171,7 @@ for ( $day = 29; $day >= 0; $day-- ) {
 	$dow  = (int) gmdate( 'N', strtotime( $date ) ); // 1=Mon, 7=Sun.
 
 	// Weekday multiplier (weekdays get more traffic).
-	$multiplier = ( $dow <= 5 ) ? mt_rand( 100, 140 ) / 100 : mt_rand( 50, 80 ) / 100;
+	$multiplier = ( $dow <= 5 ) ? wp_rand( 100, 140 ) / 100 : wp_rand( 50, 80 ) / 100;
 
 	// Slight upward trend: newer days get slightly more visits.
 	$trend = 1 + ( ( 29 - $day ) * 0.01 );
@@ -179,9 +179,9 @@ for ( $day = 29; $day >= 0; $day-- ) {
 	$day_visits = max( 5, (int) round( $base_per_day * $multiplier * $trend ) );
 
 	for ( $v = 0; $v < $day_visits; $v++ ) {
-		$hour   = mt_rand( 6, 23 );
-		$minute = mt_rand( 0, 59 );
-		$second = mt_rand( 0, 59 );
+		$hour   = wp_rand( 6, 23 );
+		$minute = wp_rand( 0, 59 );
+		$second = wp_rand( 0, 59 );
 
 		$timestamp = sprintf( '%s %02d:%02d:%02d', $date, $hour, $minute, $second );
 
@@ -192,7 +192,7 @@ for ( $day = 29; $day >= 0; $day-- ) {
 		$os       = ept_weighted_random( $os_list );
 		$country  = ept_weighted_random( $countries );
 		$code     = $country_codes[ $country ];
-		$visitor  = $visitor_ids[ mt_rand( 0, count( $visitor_ids ) - 1 ) ];
+		$visitor  = $visitor_ids[ wp_rand( 0, count( $visitor_ids ) - 1 ) ];
 
 		$visit_rows[] = array(
 			'visitor_id'   => $visitor,
@@ -250,7 +250,7 @@ foreach ( $events as $idx => $event ) {
 	$page_event_map[ $page_url ][] = $event_ids[ $idx ];
 }
 
-$total_triggers = mt_rand( 200, 350 );
+$total_triggers = wp_rand( 200, 350 );
 $event_log_rows = array();
 
 // Pages that have events.
@@ -261,17 +261,17 @@ foreach ( $event_pages as $ep ) {
 }
 
 for ( $t = 0; $t < $total_triggers; $t++ ) {
-	$day       = mt_rand( 0, 29 );
+	$day       = wp_rand( 0, 29 );
 	$date      = gmdate( 'Y-m-d', strtotime( "-{$day} days" ) );
-	$hour      = mt_rand( 6, 23 );
-	$minute    = mt_rand( 0, 59 );
-	$second    = mt_rand( 0, 59 );
+	$hour      = wp_rand( 6, 23 );
+	$minute    = wp_rand( 0, 59 );
+	$second    = wp_rand( 0, 59 );
 	$timestamp = sprintf( '%s %02d:%02d:%02d', $date, $hour, $minute, $second );
 
 	$page      = ept_weighted_random( $event_page_weights );
 	$ev_ids    = $page_event_map[ $page ];
-	$event_id  = $ev_ids[ mt_rand( 0, count( $ev_ids ) - 1 ) ];
-	$visitor   = $event_visitor_ids[ mt_rand( 0, count( $event_visitor_ids ) - 1 ) ];
+	$event_id  = $ev_ids[ wp_rand( 0, count( $ev_ids ) - 1 ) ];
+	$visitor   = $event_visitor_ids[ wp_rand( 0, count( $event_visitor_ids ) - 1 ) ];
 
 	$event_log_rows[] = array(
 		'event_id'   => $event_id,

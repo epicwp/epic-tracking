@@ -2,6 +2,10 @@
 
 namespace EpicTracking;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class Tracker
 {
     public static function init(): void

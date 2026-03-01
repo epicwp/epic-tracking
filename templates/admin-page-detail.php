@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="wrap">
     <div class="ept-page-detail-header">
         <a href="<?php echo esc_url(admin_url('admin.php?' . http_build_query(['page' => 'epic-tracking', 'date_from' => $dateFrom, 'date_to' => $dateTo]))); ?>" class="ept-back-link">&larr; <?php echo esc_html__('Back to Dashboard', 'epic-tracking'); ?></a>
@@ -56,11 +61,11 @@
     <div class="ept-stats-row ept-stats-row--2col">
         <div class="ept-stat-card">
             <p class="ept-stat-card-label"><span class="dashicons dashicons-visibility"></span> <?php echo esc_html__('Total Visits', 'epic-tracking'); ?></p>
-            <p class="ept-stat-card-value"><?php echo number_format_i18n($summary['total_visits']); ?></p>
+            <p class="ept-stat-card-value"><?php echo esc_html(number_format_i18n($summary['total_visits'])); ?></p>
         </div>
         <div class="ept-stat-card">
             <p class="ept-stat-card-label"><span class="dashicons dashicons-groups"></span> <?php echo esc_html__('Unique Visitors', 'epic-tracking'); ?></p>
-            <p class="ept-stat-card-value"><?php echo number_format_i18n($summary['unique_visitors']); ?></p>
+            <p class="ept-stat-card-value"><?php echo esc_html(number_format_i18n($summary['unique_visitors'])); ?></p>
         </div>
     </div>
 

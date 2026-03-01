@@ -35,8 +35,6 @@ register_activation_hook(__FILE__, [Database::class, 'activate']);
 
 // Initialize plugin
 add_action('plugins_loaded', function () {
-    load_plugin_textdomain('epic-tracking', false, dirname(plugin_basename(__FILE__)) . '/languages');
-
     Database::init();
     Tracker::init();
     VisualMode::init();

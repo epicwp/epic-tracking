@@ -1,3 +1,8 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+?>
 <div class="wrap">
     <div class="ept-page-detail-header">
         <a href="<?php echo esc_url(admin_url('admin.php?' . http_build_query(['page' => 'epic-tracking', 'date_from' => $dateFrom, 'date_to' => $dateTo]))); ?>" class="ept-back-link">&larr; <?php echo esc_html__('Back to Dashboard', 'epic-tracking'); ?></a>
@@ -106,14 +111,14 @@
             <?php if ($totalPages > 1) : ?>
                 <div class="ept-pagination">
                     <?php
-                    echo paginate_links([
+                    echo wp_kses_post(paginate_links([
                         'base'      => add_query_arg('paged', '%#%', $requestUri),
                         'format'    => '',
                         'current'   => $currentPage,
                         'total'     => $totalPages,
                         'prev_text' => '&laquo;',
                         'next_text' => '&raquo;',
-                    ]);
+                    ]));
                     ?>
                 </div>
             <?php endif; ?>

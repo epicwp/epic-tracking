@@ -2,6 +2,10 @@
 
 namespace EpicTracking;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class Database
 {
     const DB_VERSION = '1.2.0';
@@ -193,6 +197,7 @@ class Database
         }
         $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
         $offset = ($page - 1) * $perPage;
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderBy and $order are whitelisted above.
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT page_url,
@@ -257,6 +262,7 @@ class Database
         }
         $params[] = $perPage;
         $params[] = $offset;
+        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderBy, $order, and $where are whitelisted/controlled above.
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT e.id, e.reference_name, e.event_tag, e.event_type, e.page_url,

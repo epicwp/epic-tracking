@@ -25,6 +25,10 @@ rsync -a \
   --exclude='docs' \
   --exclude='build' \
   --exclude='*.zip' \
+  --exclude='dev' \
+  --exclude='.gitignore' \
+  --exclude='languages/.gitkeep' \
+  --exclude='README.md' \
   ./ "${BUILD_DIR}/"
 
 cd build

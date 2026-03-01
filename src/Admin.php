@@ -2,6 +2,10 @@
 
 namespace EpicTracking;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 class Admin
 {
     public static function init(): void
@@ -92,8 +96,8 @@ class Admin
 
         // Date range — default to last 7 days
         $today    = gmdate('Y-m-d');
-        $dateFrom = sanitize_text_field($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days')));
-        $dateTo   = sanitize_text_field($_GET['date_to'] ?? $today);
+        $dateFrom = sanitize_text_field(wp_unslash($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days'))));
+        $dateTo   = sanitize_text_field(wp_unslash($_GET['date_to'] ?? $today));
 
         // Validate date format
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
@@ -108,19 +112,19 @@ class Admin
         $sqlTo   = gmdate('Y-m-d', strtotime($dateTo . ' +1 day')) . ' 00:00:00';
 
         // Pagination
-        $visitPage = max(1, (int) ($_GET['vpage'] ?? 1));
-        $eventPage = max(1, (int) ($_GET['epage'] ?? 1));
+        $visitPage = max(1, absint($_GET['vpage'] ?? 1));
+        $eventPage = max(1, absint($_GET['epage'] ?? 1));
 
         // Sorting — visits
-        $visitSort  = sanitize_text_field($_GET['vsort'] ?? 'total_visits');
-        $visitOrder = sanitize_text_field($_GET['vorder'] ?? 'DESC');
+        $visitSort  = sanitize_text_field(wp_unslash($_GET['vsort'] ?? 'total_visits'));
+        $visitOrder = sanitize_text_field(wp_unslash($_GET['vorder'] ?? 'DESC'));
 
         // Sorting — events
-        $eventSort  = sanitize_text_field($_GET['esort'] ?? 'total_triggers');
-        $eventOrder = sanitize_text_field($_GET['eorder'] ?? 'DESC');
+        $eventSort  = sanitize_text_field(wp_unslash($_GET['esort'] ?? 'total_triggers'));
+        $eventOrder = sanitize_text_field(wp_unslash($_GET['eorder'] ?? 'DESC'));
 
         // URL filter for events
-        $filterUrl = isset($_GET['filter_url']) ? sanitize_text_field($_GET['filter_url']) : '';
+        $filterUrl = isset($_GET['filter_url']) ? sanitize_text_field(wp_unslash($_GET['filter_url'])) : '';
 
         // Summary totals
         $visitSummary = Database::getVisitSummary($sqlFrom, $sqlTo);
@@ -147,15 +151,15 @@ class Admin
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
         wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
 
-        $pageUrl = sanitize_text_field($_GET['page_url'] ?? '');
+        $pageUrl = sanitize_text_field(wp_unslash($_GET['page_url'] ?? ''));
         if ($pageUrl === '') {
-            wp_die(__('Missing page URL.', 'epic-tracking'));
+            wp_die(esc_html__('Missing page URL.', 'epic-tracking'));
         }
 
         // Date range — same logic as dashboard
         $today    = gmdate('Y-m-d');
-        $dateFrom = sanitize_text_field($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days')));
-        $dateTo   = sanitize_text_field($_GET['date_to'] ?? $today);
+        $dateFrom = sanitize_text_field(wp_unslash($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days'))));
+        $dateTo   = sanitize_text_field(wp_unslash($_GET['date_to'] ?? $today));
 
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
             $dateFrom = gmdate('Y-m-d', strtotime('-6 days'));
@@ -186,8 +190,8 @@ class Admin
         wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
 
         $today    = gmdate('Y-m-d');
-        $dateFrom = sanitize_text_field($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days')));
-        $dateTo   = sanitize_text_field($_GET['date_to'] ?? $today);
+        $dateFrom = sanitize_text_field(wp_unslash($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days'))));
+        $dateTo   = sanitize_text_field(wp_unslash($_GET['date_to'] ?? $today));
 
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
             $dateFrom = gmdate('Y-m-d', strtotime('-6 days'));
@@ -199,9 +203,9 @@ class Admin
         $sqlFrom = $dateFrom . ' 00:00:00';
         $sqlTo   = gmdate('Y-m-d', strtotime($dateTo . ' +1 day')) . ' 00:00:00';
 
-        $currentPage = max(1, (int) ($_GET['paged'] ?? 1));
-        $sortBy      = sanitize_text_field($_GET['vsort'] ?? 'total_visits');
-        $sortOrder   = sanitize_text_field($_GET['vorder'] ?? 'DESC');
+        $currentPage = max(1, absint($_GET['paged'] ?? 1));
+        $sortBy      = sanitize_text_field(wp_unslash($_GET['vsort'] ?? 'total_visits'));
+        $sortOrder   = sanitize_text_field(wp_unslash($_GET['vorder'] ?? 'DESC'));
 
         $visitStats      = Database::getVisitStats($sqlFrom, $sqlTo, self::PER_PAGE_FULL, $currentPage, $sortBy, $sortOrder);
         $totalPages      = (int) ceil(Database::getVisitStatsCount($sqlFrom, $sqlTo) / self::PER_PAGE_FULL);
@@ -215,8 +219,8 @@ class Admin
         wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
 
         $today    = gmdate('Y-m-d');
-        $dateFrom = sanitize_text_field($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days')));
-        $dateTo   = sanitize_text_field($_GET['date_to'] ?? $today);
+        $dateFrom = sanitize_text_field(wp_unslash($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days'))));
+        $dateTo   = sanitize_text_field(wp_unslash($_GET['date_to'] ?? $today));
 
         if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateFrom)) {
             $dateFrom = gmdate('Y-m-d', strtotime('-6 days'));
@@ -228,9 +232,9 @@ class Admin
         $sqlFrom = $dateFrom . ' 00:00:00';
         $sqlTo   = gmdate('Y-m-d', strtotime($dateTo . ' +1 day')) . ' 00:00:00';
 
-        $currentPage = max(1, (int) ($_GET['paged'] ?? 1));
-        $sortBy      = sanitize_text_field($_GET['esort'] ?? 'total_triggers');
-        $sortOrder   = sanitize_text_field($_GET['eorder'] ?? 'DESC');
+        $currentPage = max(1, absint($_GET['paged'] ?? 1));
+        $sortBy      = sanitize_text_field(wp_unslash($_GET['esort'] ?? 'total_triggers'));
+        $sortOrder   = sanitize_text_field(wp_unslash($_GET['eorder'] ?? 'DESC'));
 
         $eventStats      = Database::getEventStats($sqlFrom, $sqlTo, self::PER_PAGE_FULL, $currentPage, '', $sortBy, $sortOrder);
         $totalPages      = (int) ceil(Database::getEventStatsCount() / self::PER_PAGE_FULL);

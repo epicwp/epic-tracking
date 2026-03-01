@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name:       Epic Tracking
- * Plugin URI:        https://github.com/epicwpsolutions/epic-tracking
+ * Plugin URI:        https://github.com/epicwp/epic-tracking
  * Description:       Lightweight visit and event tracking for WordPress
  * Version:           1.0.0
  * Author:            Epic WP Solutions

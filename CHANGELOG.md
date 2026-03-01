@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/epicwp/epic-tracking/compare/v1.3.1...v1.3.2) (2026-03-01)
+
+
+### Bug Fixes
+
+* hide empty submenu items via admin_head CSS injection ([7ba2333](https://github.com/epicwp/epic-tracking/commit/7ba2333c7c6b08e5a2103bd374b28d54129d7dbd))
+
 ## [1.3.1](https://github.com/epicwp/epic-tracking/compare/v1.3.0...v1.3.1) (2026-03-01)
 
 

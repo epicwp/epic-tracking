@@ -8,6 +8,12 @@ class Admin
     {
         add_action('admin_menu', [self::class, 'addMenuPages']);
         add_action('admin_init', [self::class, 'registerSettings']);
+        add_action('admin_head', [self::class, 'hideSubmenuItems']);
+    }
+
+    public static function hideSubmenuItems(): void
+    {
+        echo '<style>#adminmenu a[href*="page=epic-tracking-page-detail"],#adminmenu a[href*="page=epic-tracking-all-visits"],#adminmenu a[href*="page=epic-tracking-all-events"]{display:none}</style>';
     }
 
     public static function addMenuPages(): void
@@ -31,7 +37,7 @@ class Admin
             [self::class, 'renderSettings']
         );
 
-        // Page detail — registered under parent for proper WP globals, hidden via CSS
+        // Hidden pages — registered under parent for access, hidden via CSS
         add_submenu_page(
             'epic-tracking',
             __('Page Detail', 'epic-tracking'),
@@ -41,7 +47,6 @@ class Admin
             [self::class, 'renderPageDetail']
         );
 
-        // All visits — full-page list view, hidden from menu
         add_submenu_page(
             'epic-tracking',
             __('All Page Visits', 'epic-tracking'),
@@ -51,7 +56,6 @@ class Admin
             [self::class, 'renderAllVisits']
         );
 
-        // All events — full-page list view, hidden from menu
         add_submenu_page(
             'epic-tracking',
             __('All Events', 'epic-tracking'),
@@ -60,11 +64,6 @@ class Admin
             'epic-tracking-all-events',
             [self::class, 'renderAllEvents']
         );
-
-        // Remove hidden pages from the sidebar menu
-        remove_submenu_page('epic-tracking', 'epic-tracking-page-detail');
-        remove_submenu_page('epic-tracking', 'epic-tracking-all-visits');
-        remove_submenu_page('epic-tracking', 'epic-tracking-all-events');
     }
 
     public static function registerSettings(): void

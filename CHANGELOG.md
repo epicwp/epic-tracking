@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/epicwp/epic-tracking/compare/v1.3.0...v1.3.1) (2026-03-01)
+
+
+### Bug Fixes
+
+* remove hidden submenu pages from sidebar menu ([bc42b0c](https://github.com/epicwp/epic-tracking/commit/bc42b0ceb6f10861a2a8923983e074127b4e8ea5))
+
 # [1.3.0](https://github.com/epicwp/epic-tracking/compare/v1.2.0...v1.3.0) (2026-03-01)
 
 

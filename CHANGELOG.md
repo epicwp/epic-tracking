@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/epicwp/epic-tracking/compare/v1.2.0...v1.3.0) (2026-03-01)
+
+
+### Features
+
+* limit dashboard tables to 10 rows with sortable columns and view-all pages ([c6381db](https://github.com/epicwp/epic-tracking/commit/c6381dbdff83d22d1fd538f5d808f3c976c5b46c))
+
 # [1.2.0](https://github.com/epicwp/epic-tracking/compare/v1.1.0...v1.2.0) (2026-03-01)
 
 

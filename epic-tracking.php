@@ -1,11 +1,17 @@
 <?php
 /**
- * Plugin Name: Epic Tracking
- * Description: Lightweight visit and event tracking for WordPress
- * Version: 1.0.0
- * Author: Epic WP Solutions
- * Text Domain: epic-tracking
- * Requires PHP: 7.4
+ * Plugin Name:       Epic Tracking
+ * Plugin URI:        https://github.com/epicwpsolutions/epic-tracking
+ * Description:       Lightweight visit and event tracking for WordPress
+ * Version:           1.0.0
+ * Author:            Epic WP Solutions
+ * Author URI:        https://epicwpsolutions.com
+ * Text Domain:       epic-tracking
+ * Domain Path:       /languages
+ * Requires at least: 6.0
+ * Requires PHP:      7.4
+ * License:           GPL-2.0-or-later
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  */
 
 if (!defined('ABSPATH')) {

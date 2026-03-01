@@ -1,0 +1,51 @@
+{
+  "branches": [
+    "main",
+    { "name": "beta", "prerelease": true },
+    { "name": "alpha", "prerelease": true }
+  ],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "sed -i '' \"s/^ \\* Version:.*/ * Version:           ${nextRelease.version}/\" epic-tracking.php && sed -i '' \"s/define('EPT_VERSION', '.*')/define('EPT_VERSION', '${nextRelease.version}')/\" epic-tracking.php && sed -i '' \"s/^Stable tag:.*/Stable tag: ${nextRelease.version}/\" readme.txt"
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": [
+          "epic-tracking.php",
+          "readme.txt",
+          "CHANGELOG.md"
+        ],
+        "message": "chore(release): ${nextRelease.version} [skip ci]"
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "publishCmd": "bash .github/scripts/build-zip.sh ${nextRelease.version}"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "build/epic-tracking-*.zip",
+            "label": "epic-tracking-${nextRelease.version}.zip"
+          }
+        ]
+      }
+    ]
+  ]
+}

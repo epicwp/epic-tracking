@@ -30,7 +30,7 @@ class VisualMode
             return;
         }
 
-        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $requestUri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
         $currentUrl = home_url($requestUri);
         $visualUrl = add_query_arg('ept_visual_mode', '1', $currentUrl);
 
@@ -46,7 +46,8 @@ class VisualMode
 
     public static function maybeEnqueueVisualMode(): void
     {
-        if (!isset($_GET['ept_visual_mode']) || $_GET['ept_visual_mode'] !== '1') {
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- query param check, not form processing
+        if (!isset($_GET['ept_visual_mode']) || sanitize_text_field(wp_unslash($_GET['ept_visual_mode'])) !== '1') {
             return;
         }
 
@@ -54,7 +55,7 @@ class VisualMode
             return;
         }
 
-        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+        $requestUri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
         $pageUrl = wp_parse_url(
             remove_query_arg('ept_visual_mode', home_url($requestUri)),
             PHP_URL_PATH
@@ -82,10 +83,10 @@ class VisualMode
         }
 
         $id = Database::saveEvent([
-            'page_url'       => sanitize_text_field($_POST['page_url'] ?? ''),
-            'selector'       => wp_unslash($_POST['selector'] ?? ''),
-            'reference_name' => sanitize_text_field($_POST['reference_name'] ?? ''),
-            'event_tag'      => sanitize_text_field($_POST['event_tag'] ?? ''),
+            'page_url'       => sanitize_text_field(wp_unslash($_POST['page_url'] ?? '')),
+            'selector'       => sanitize_text_field(wp_unslash($_POST['selector'] ?? '')),
+            'reference_name' => sanitize_text_field(wp_unslash($_POST['reference_name'] ?? '')),
+            'event_tag'      => sanitize_text_field(wp_unslash($_POST['event_tag'] ?? '')),
             'event_type'     => 'click',
         ]);
 
@@ -100,16 +101,16 @@ class VisualMode
             return;
         }
 
-        $id = (int) ($_POST['id'] ?? 0);
+        $id = absint(wp_unslash($_POST['id'] ?? 0));
         if (!$id) {
             wp_send_json_error(__('Missing event ID', 'epic-tracking'), 400);
             return;
         }
 
         Database::updateEvent($id, [
-            'reference_name' => sanitize_text_field($_POST['reference_name'] ?? ''),
-            'event_tag'      => sanitize_text_field($_POST['event_tag'] ?? ''),
-            'selector'       => wp_unslash($_POST['selector'] ?? ''),
+            'reference_name' => sanitize_text_field(wp_unslash($_POST['reference_name'] ?? '')),
+            'event_tag'      => sanitize_text_field(wp_unslash($_POST['event_tag'] ?? '')),
+            'selector'       => sanitize_text_field(wp_unslash($_POST['selector'] ?? '')),
         ]);
 
         wp_send_json_success();
@@ -123,7 +124,7 @@ class VisualMode
             return;
         }
 
-        $id = (int) ($_POST['id'] ?? 0);
+        $id = absint(wp_unslash($_POST['id'] ?? 0));
         if (!$id) {
             wp_send_json_error(__('Missing event ID', 'epic-tracking'), 400);
             return;
@@ -141,7 +142,7 @@ class VisualMode
             return;
         }
 
-        $pageUrl = sanitize_text_field($_POST['page_url'] ?? '');
+        $pageUrl = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
         $events = Database::getEventsForPage($pageUrl);
 
         wp_send_json_success($events);

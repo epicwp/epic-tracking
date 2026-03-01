@@ -1,4 +1,4 @@
-=== Epic Tracking – Easy Event Tracking for WordPress ===
+=== Epic Tracking – Easy Event Tracking ===
 Contributors: epicwpsolutions
 Tags: event tracking, click tracking, analytics, page views, statistics
 Requires at least: 6.0

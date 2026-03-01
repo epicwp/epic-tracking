@@ -1,4 +1,4 @@
-# Epic Tracking – Easy Event Tracking for WordPress
+# Epic Tracking – Easy Event Tracking
 
 Easy event tracking for WordPress. Point, click, and track — no code, no tag managers, no third-party scripts.
 

@@ -2,6 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template included in function scope
 ?>
 <div class="wrap">
     <h1><?php echo esc_html__('Epic Tracking Settings', 'epic-tracking'); ?></h1>
@@ -32,3 +33,4 @@ if ( ! defined( 'ABSPATH' ) ) {
         <?php submit_button(); ?>
     </form>
 </div>
+<?php // phpcs:enable ?>

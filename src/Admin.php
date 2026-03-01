@@ -89,6 +89,7 @@ class Admin
     const PER_PAGE = 10;
     const PER_PAGE_FULL = 25;
 
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderDashboard(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
@@ -145,7 +146,9 @@ class Admin
 
         include EPT_PLUGIN_DIR . 'templates/admin-dashboard.php';
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderPageDetail(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
@@ -183,7 +186,9 @@ class Admin
 
         include EPT_PLUGIN_DIR . 'templates/admin-page-detail.php';
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderAllVisits(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
@@ -212,7 +217,9 @@ class Admin
 
         include EPT_PLUGIN_DIR . 'templates/admin-all-visits.php';
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
+    // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderAllEvents(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
@@ -241,6 +248,7 @@ class Admin
 
         include EPT_PLUGIN_DIR . 'templates/admin-all-events.php';
     }
+    // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     public static function renderSettings(): void
     {

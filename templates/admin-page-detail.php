@@ -2,6 +2,7 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedVariableFound -- template included in function scope
 ?>
 <div class="wrap">
     <div class="ept-page-detail-header">
@@ -254,3 +255,4 @@ if ( ! defined( 'ABSPATH' ) ) {
     </div>
 
 </div>
+<?php // phpcs:enable ?>

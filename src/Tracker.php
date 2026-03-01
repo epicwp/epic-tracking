@@ -23,6 +23,7 @@ class Tracker
     public static function enqueueTracker(): void
     {
         // Don't track in visual mode or excluded roles
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- query param check, not form processing
         if (isset($_GET['ept_visual_mode'])) {
             return;
         }
@@ -56,12 +57,13 @@ class Tracker
         ]);
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
     public static function handleTrackVisit(): void
     {
-        $visitorId = sanitize_text_field($_POST['visitor_id'] ?? '');
-        $pageUrl   = sanitize_text_field($_POST['page_url'] ?? '');
-        $referrer  = sanitize_text_field($_POST['referrer'] ?? '');
-        $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? '');
+        $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
+        $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
+        $referrer  = sanitize_text_field(wp_unslash($_POST['referrer'] ?? ''));
+        $userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''));
 
         if (empty($visitorId) || empty($pageUrl)) {
             wp_send_json_error(__('Missing required fields', 'epic-tracking'), 400);
@@ -74,18 +76,19 @@ class Tracker
         }
 
         $parsed = UserAgentParser::parse($userAgent);
-        $ip  = $_SERVER['REMOTE_ADDR'] ?? '';
+        $ip  = sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? ''));
         $geo = GeoIP::lookup($ip);
         Database::logVisit($visitorId, $pageUrl, $referrer, $userAgent, $parsed['device_type'], $parsed['browser'], $parsed['os'], $geo['country'], $geo['country_code']);
         wp_send_json_success();
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
     public static function handleTrackEvent(): void
     {
-        $eventId   = (int) ($_POST['event_id'] ?? 0);
-        $visitorId = sanitize_text_field($_POST['visitor_id'] ?? '');
-        $pageUrl   = sanitize_text_field($_POST['page_url'] ?? '');
-        $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? '');
+        $eventId   = absint(wp_unslash($_POST['event_id'] ?? 0));
+        $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
+        $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
+        $userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''));
 
         if (empty($eventId) || empty($visitorId) || empty($pageUrl)) {
             wp_send_json_error(__('Missing required fields', 'epic-tracking'), 400);
@@ -116,7 +119,7 @@ class Tracker
 
     private static function getCurrentPageUrl(): string
     {
-        $uri = $_SERVER['REQUEST_URI'] ?? '/';
+        $uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
         return wp_parse_url(home_url($uri), PHP_URL_PATH) ?: '/';
     }
 }

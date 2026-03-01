@@ -84,12 +84,14 @@ class Database
         ) $charset;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
         dbDelta($sql);
     }
 
     public static function getEventsForPage(string $pageUrl): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT * FROM {$wpdb->prefix}ept_events WHERE page_url = %s ORDER BY id ASC",
@@ -102,6 +104,7 @@ class Database
     public static function saveEvent(array $data): int
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->insert("{$wpdb->prefix}ept_events", [
             'page_url'       => $data['page_url'],
             'selector'       => $data['selector'],
@@ -124,18 +127,21 @@ class Database
         if (empty($update)) {
             return false;
         }
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->update("{$wpdb->prefix}ept_events", $update, ['id' => $id]);
     }
 
     public static function deleteEvent(int $id): bool
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (bool) $wpdb->delete("{$wpdb->prefix}ept_events", ['id' => $id]);
     }
 
     public static function logVisit(string $visitorId, string $pageUrl, string $referrer, string $userAgent, string $deviceType = '', string $browser = '', string $os = '', string $country = '', string $countryCode = ''): void
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->insert("{$wpdb->prefix}ept_visits", [
             'visitor_id'   => $visitorId,
             'page_url'     => $pageUrl,
@@ -152,6 +158,7 @@ class Database
     public static function logEvent(int $eventId, string $visitorId, string $pageUrl): void
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $wpdb->insert("{$wpdb->prefix}ept_event_log", [
             'event_id'   => $eventId,
             'visitor_id' => $visitorId,
@@ -162,6 +169,7 @@ class Database
     public static function getVisitSummary(string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT COUNT(*) as total_visits,
@@ -178,6 +186,7 @@ class Database
     public static function getVisitStatsCount(string $dateFrom, string $dateTo): int
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return (int) $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT COUNT(DISTINCT page_url)
@@ -197,7 +206,7 @@ class Database
         }
         $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
         $offset = ($page - 1) * $perPage;
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderBy and $order are whitelisted above.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $orderBy and $order are whitelisted above.
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT page_url,
@@ -217,6 +226,7 @@ class Database
     public static function getEventSummary(string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT COUNT(l.id) as total_triggers,
@@ -234,6 +244,7 @@ class Database
     {
         global $wpdb;
         if ($pageUrl !== '') {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             return (int) $wpdb->get_var(
                 $wpdb->prepare(
                     "SELECT COUNT(*) FROM {$wpdb->prefix}ept_events WHERE page_url = %s",
@@ -262,7 +273,7 @@ class Database
         }
         $params[] = $perPage;
         $params[] = $offset;
-        // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- $orderBy, $order, and $where are whitelisted/controlled above.
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $orderBy, $order, and $where are whitelisted/controlled above; $params is built dynamically.
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT e.id, e.reference_name, e.event_tag, e.event_type, e.page_url,
@@ -286,6 +297,7 @@ class Database
     public static function getDailyVisits(string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT DATE(created_at) as visit_date,
@@ -304,6 +316,7 @@ class Database
     public static function getPageVisitSummary(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         $row = $wpdb->get_row(
             $wpdb->prepare(
                 "SELECT COUNT(*) as total_visits,
@@ -320,6 +333,7 @@ class Database
     public static function getPageDailyVisits(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT DATE(created_at) as visit_date,
@@ -338,6 +352,7 @@ class Database
     public static function getPageReferrers(string $pageUrl, string $dateFrom, string $dateTo, int $limit = 10): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT referrer, COUNT(*) as visits
@@ -356,6 +371,7 @@ class Database
     public static function getPageDeviceBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT device_type, COUNT(*) as visits
@@ -373,6 +389,7 @@ class Database
     public static function getPageBrowserBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT browser, COUNT(*) as visits
@@ -390,6 +407,7 @@ class Database
     public static function getPageOsBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT os, COUNT(*) as visits
@@ -407,6 +425,7 @@ class Database
     public static function getPageEvents(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT e.id, e.reference_name, e.event_tag, e.event_type,
@@ -427,6 +446,7 @@ class Database
     public static function getPageCountryBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT country, COUNT(*) as visits
@@ -444,6 +464,7 @@ class Database
     public static function getTopCountries(string $dateFrom, string $dateTo, int $limit = 10): array
     {
         global $wpdb;
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT country, country_code, COUNT(*) as visits

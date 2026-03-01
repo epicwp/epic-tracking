@@ -18,10 +18,12 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound -- EPT is the plugin prefix
 define('EPT_VERSION', '1.3.3');
 define('EPT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EPT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('EPT_PLUGIN_FILE', __FILE__);
+// phpcs:enable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedConstantFound
 
 require_once EPT_PLUGIN_DIR . 'vendor/autoload.php';
 

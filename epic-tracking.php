@@ -3,7 +3,7 @@
  * Plugin Name:       Epic Tracking
  * Plugin URI:        https://github.com/epicwp/epic-tracking
  * Description:       Lightweight visit and event tracking for WordPress
- * Version:           1.0.0
+ * Version:           1.1.0
  * Author:            Epic WP Solutions
  * Author URI:        https://epicwpsolutions.com
  * Text Domain:       epic-tracking
@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('EPT_VERSION', '1.0.0');
+define('EPT_VERSION', '1.1.0');
 define('EPT_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EPT_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('EPT_PLUGIN_FILE', __FILE__);

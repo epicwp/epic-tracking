@@ -13,6 +13,17 @@ Lightweight, privacy-first visit and event tracking built directly into WordPres
 - **Role exclusion** — Exclude logged-in users by role from being tracked.
 - **Privacy-first** — No cookies, no external requests, no personal data collection.
 
+## Screenshots
+
+### Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Page Detail
+![Page Detail](screenshots/page-detail.png)
+
+### Visual Mode
+![Visual Mode](screenshots/visual-mode.png)
+
 ## Requirements
 
 - WordPress 6.0+

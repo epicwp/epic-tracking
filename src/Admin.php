@@ -63,6 +63,7 @@ class Admin
     public static function renderDashboard(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
+        wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
 
         // Date range — default to last 7 days
         $today    = gmdate('Y-m-d');
@@ -108,6 +109,7 @@ class Admin
     public static function renderPageDetail(): void
     {
         wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
+        wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
 
         $pageUrl = sanitize_text_field($_GET['page_url'] ?? '');
         if ($pageUrl === '') {

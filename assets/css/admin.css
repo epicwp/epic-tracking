@@ -1,22 +1,105 @@
-/* Date range filter bar */
-.ept-date-filter {
+/* Date range picker */
+.ept-date-picker {
+    position: relative;
+    display: inline-block;
     margin: 16px 0;
-    display: flex;
+}
+
+.ept-date-picker__trigger {
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
     background: #fff;
     border: 1px solid #c3c4c7;
     border-radius: 4px;
-    padding: 10px 16px;
+    padding: 0 12px;
+    height: 36px;
+    font-size: 13px;
+    color: #2c3338;
+    cursor: pointer;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-.ept-date-filter label {
-    font-size: 13px;
-    font-weight: 500;
+.ept-date-picker__trigger:hover {
+    border-color: #8c8f94;
+}
+
+.ept-date-picker__trigger .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
     color: #787c82;
 }
 
-.ept-date-filter input[type="date"] {
+.ept-date-picker__dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 100;
+    margin-top: 4px;
+    min-width: 280px;
+    background: #fff;
+    border: 1px solid #c3c4c7;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.ept-date-picker__dropdown.is-open {
+    display: block;
+}
+
+.ept-date-picker__preset {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 9px 16px;
+    border: none;
+    background: none;
+    font-size: 13px;
+    color: #2c3338;
+    cursor: pointer;
+    text-align: left;
+    box-sizing: border-box;
+}
+
+.ept-date-picker__preset:hover {
+    background: #f0f0f1;
+}
+
+.ept-date-picker__check {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #2271b1;
+    visibility: hidden;
+}
+
+.ept-date-picker__separator {
+    border: none;
+    border-top: 1px solid #e0e0e0;
+    margin: 4px 16px;
+}
+
+.ept-date-picker__custom {
+    display: none;
+    padding: 10px 16px 14px;
+}
+
+.ept-date-picker__custom.is-visible {
+    display: block;
+}
+
+.ept-date-picker__custom-fields {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.ept-date-picker__custom-fields input[type="date"] {
+    flex: 1;
     padding: 4px 8px;
     height: 32px;
     border: 1px solid #8c8f94;
@@ -25,6 +108,10 @@
     color: #2c3338;
     background: #fff;
     box-sizing: border-box;
+}
+
+.ept-date-picker__apply {
+    width: 100%;
 }
 
 /* Summary stat cards */

@@ -8,16 +8,55 @@
     }
     $requestUri = esc_url_raw(wp_unslash($_SERVER['REQUEST_URI'] ?? ''));
     ?>
-    <form method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>" class="ept-date-filter">
+    <form method="get" action="<?php echo esc_url(admin_url('admin.php')); ?>" class="ept-date-picker">
         <input type="hidden" name="page" value="epic-tracking">
         <?php if ($filterUrl !== '') : ?>
             <input type="hidden" name="filter_url" value="<?php echo esc_attr($filterUrl); ?>">
         <?php endif; ?>
-        <label for="ept-date-from">From</label>
-        <input type="date" id="ept-date-from" name="date_from" value="<?php echo esc_attr($dateFrom); ?>" max="<?php echo esc_attr($dateTo); ?>">
-        <label for="ept-date-to">To</label>
-        <input type="date" id="ept-date-to" name="date_to" value="<?php echo esc_attr($dateTo); ?>" max="<?php echo esc_attr(gmdate('Y-m-d')); ?>">
-        <button type="submit" class="button button-primary">Apply</button>
+        <input type="hidden" name="date_from" value="<?php echo esc_attr($dateFrom); ?>">
+        <input type="hidden" name="date_to" value="<?php echo esc_attr($dateTo); ?>">
+
+        <button type="button" class="ept-date-picker__trigger">
+            <span class="dashicons dashicons-calendar-alt"></span>
+            <span class="ept-date-picker__label"></span>
+            <span class="dashicons dashicons-arrow-down-alt2"></span>
+        </button>
+
+        <div class="ept-date-picker__dropdown">
+            <?php
+            $presets = [
+                ['label' => 'Today',        'from' => gmdate('Y-m-d'),                                        'to' => gmdate('Y-m-d')],
+                ['label' => 'Yesterday',     'from' => gmdate('Y-m-d', strtotime('-1 day')),                   'to' => gmdate('Y-m-d', strtotime('-1 day'))],
+                ['label' => 'Last 7 days',   'from' => gmdate('Y-m-d', strtotime('-6 days')),                  'to' => gmdate('Y-m-d')],
+                ['label' => 'Last 30 days',  'from' => gmdate('Y-m-d', strtotime('-29 days')),                 'to' => gmdate('Y-m-d')],
+                ['label' => 'This month',    'from' => gmdate('Y-m-01'),                                      'to' => gmdate('Y-m-d')],
+                ['label' => 'Last month',    'from' => gmdate('Y-m-01', strtotime('first day of last month')), 'to' => gmdate('Y-m-t', strtotime('last month'))],
+            ];
+            foreach ($presets as $preset) : ?>
+                <button type="button" class="ept-date-picker__preset"
+                    data-label="<?php echo esc_attr($preset['label']); ?>"
+                    data-from="<?php echo esc_attr($preset['from']); ?>"
+                    data-to="<?php echo esc_attr($preset['to']); ?>">
+                    <?php echo esc_html($preset['label']); ?>
+                    <span class="dashicons dashicons-yes-alt ept-date-picker__check"></span>
+                </button>
+            <?php endforeach; ?>
+
+            <hr class="ept-date-picker__separator">
+
+            <button type="button" class="ept-date-picker__preset" data-preset="custom" data-label="Custom range">
+                Custom range
+                <span class="dashicons dashicons-yes-alt ept-date-picker__check"></span>
+            </button>
+
+            <div class="ept-date-picker__custom">
+                <div class="ept-date-picker__custom-fields">
+                    <input type="date" class="ept-date-picker__custom-from" value="<?php echo esc_attr($dateFrom); ?>" max="<?php echo esc_attr(gmdate('Y-m-d')); ?>">
+                    <input type="date" class="ept-date-picker__custom-to" value="<?php echo esc_attr($dateTo); ?>" max="<?php echo esc_attr(gmdate('Y-m-d')); ?>">
+                </div>
+                <button type="button" class="button button-primary ept-date-picker__apply">Apply</button>
+            </div>
+        </div>
     </form>
 
     <div class="ept-stats-row">

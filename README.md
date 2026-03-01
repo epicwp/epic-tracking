@@ -1,28 +1,37 @@
 # Epic Tracking
 
-Lightweight, privacy-first visit and event tracking built directly into WordPress. No external services required.
+WordPress event tracking with a visual editor. Point, click, track — no code required.
+
+![Visual Mode](screenshots/visual-mode.png)
+
+## Track clicks on any element
+
+Open the visual editor, click the button or link you want to track, give it a name and tag, and save. Epic Tracking handles the rest — no code, no Google Tag Manager, no external services.
+
+- Track button clicks, form submissions, link clicks, and any other element
+- Set up events visually by clicking on your live site
+- View per-event trigger counts and unique visitors
+- All data stays in your WordPress database
+
+## Built-in analytics dashboard
+
+See visits, events, referrers, devices, browsers, operating systems, and countries — all from your WordPress admin.
+
+![Dashboard](screenshots/dashboard.png)
+
+Drill down into any page to see its traffic, events, and visitor breakdown.
+
+![Page Detail](screenshots/page-detail.png)
 
 ## Features
 
-- **Visit tracking** — Automatically logs page views with referrer, device, browser, and OS data.
-- **Event tracking** — Define custom click events on any element using CSS selectors.
-- **Visual mode** — Point-and-click interface to set up event tracking without writing code.
-- **Dashboard** — View visit and event statistics with date filtering and per-page breakdowns.
-- **Bot filtering** — Automatically excludes known bots and crawlers from your data.
-- **User-agent parsing** — Breaks down visits by device type, browser, and operating system.
+- **Visual event editor** — Point-and-click setup for tracking clicks on any element. No code or tag managers needed.
+- **Event analytics** — See which events fire most, with trigger counts and unique visitor stats.
+- **Visit tracking** — Automatic page view logging with referrer, device, browser, OS, and country data.
+- **Country geolocation** — See where your visitors come from with automatic IP-based country detection.
+- **Privacy-first** — No cookies, no external analytics services, no personal data collection.
+- **Bot filtering** — Automatically excludes known bots and crawlers.
 - **Role exclusion** — Exclude logged-in users by role from being tracked.
-- **Privacy-first** — No cookies, no external requests, no personal data collection.
-
-## Screenshots
-
-### Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Page Detail
-![Page Detail](screenshots/page-detail.png)
-
-### Visual Mode
-![Visual Mode](screenshots/visual-mode.png)
 
 ## Requirements
 

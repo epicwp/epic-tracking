@@ -79,7 +79,7 @@
     </div>
 
     <div class="ept-section" style="margin-bottom: 20px;">
-        <h2 class="ept-section-title"><span class="dashicons dashicons-chart-area"></span> Daily Breakdown</h2>
+        <h2 class="ept-section-title"><span class="dashicons dashicons-chart-area"></span> Traffic Overview</h2>
         <?php if (empty($dailyVisits)) : ?>
             <div class="ept-empty-state">
                 <span class="dashicons dashicons-chart-area"></span>

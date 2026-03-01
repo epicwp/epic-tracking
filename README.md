@@ -1,6 +1,10 @@
 # Epic Tracking
 
-WordPress event tracking with a visual editor. Point, click, track — no code required.
+Lightweight visit and event tracking for WordPress. Track page views, button clicks, form submissions, and more — all from your WordPress admin, with no external services.
+
+## Visual event editor
+
+Set up click tracking without writing a single line of code. Open the visual editor on any page, click the element you want to track, and save.
 
 ![Visual Mode](screenshots/visual-mode.png)
 

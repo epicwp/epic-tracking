@@ -29,6 +29,9 @@ rsync -a \
   --exclude='.gitignore' \
   --exclude='languages/.gitkeep' \
   --exclude='README.md' \
+  --exclude='.wordpress-org' \
+  --exclude='screenshots' \
+  --exclude='.DS_Store' \
   ./ "${BUILD_DIR}/"
 
 cd build

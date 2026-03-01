@@ -1,6 +1,6 @@
 /* Visual mode: push page content and show sidebar */
 body.ept-visual-mode-active {
-    margin-right: 360px !important;
+    margin-right: 380px !important;
 }
 
 /* Sidebar — fixed right panel */
@@ -8,10 +8,11 @@ body.ept-visual-mode-active {
     position: fixed;
     top: 0;
     right: 0;
-    width: 360px;
+    width: 380px;
     height: 100vh;
-    background: #f0f0f1;
-    border-left: 1px solid #c3c4c7;
+    background: #fff;
+    border-left: none;
+    box-shadow: -4px 0 24px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     overflow-y: auto;
@@ -40,9 +41,8 @@ body.admin-bar #ept-visual-sidebar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 14px 16px;
-    background: #fff;
-    border-bottom: 1px solid #c3c4c7;
+    padding: 16px 20px;
+    background: #1d2327;
     flex-shrink: 0;
 }
 
@@ -50,41 +50,41 @@ body.admin-bar #ept-visual-sidebar {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
-    color: #1d2327;
+    color: #fff;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
 }
 
 .ept-sidebar-header h2 .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
-    color: #2271b1;
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .ept-close-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 28px;
-    height: 28px;
-    font-size: 18px;
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
     text-decoration: none;
-    color: #787c82;
+    color: rgba(255, 255, 255, 0.5);
     line-height: 1;
-    border-radius: 4px;
-    transition: background 0.1s, color 0.1s;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
 }
 
 .ept-close-btn:hover {
-    background: #f0f0f1;
-    color: #d63638;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
 }
 
 /* --- Content area --- */
 .ept-sidebar-content {
-    padding: 16px;
+    padding: 20px;
     flex: 1;
     overflow-y: auto;
 }
@@ -94,7 +94,7 @@ body.admin-bar #ept-visual-sidebar {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     color: #787c82;
     display: flex;
     align-items: center;
@@ -109,8 +109,8 @@ body.admin-bar #ept-visual-sidebar {
 
 .ept-sidebar-content hr {
     border: none;
-    border-top: 1px solid #dcdcde;
-    margin: 16px 0;
+    border-top: 1px solid #f0f0f1;
+    margin: 20px 0;
 }
 
 /* --- Button styles (WP admin CSS not available on frontend) --- */
@@ -118,25 +118,26 @@ body.admin-bar #ept-visual-sidebar {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 0 12px;
-    height: 32px;
+    gap: 6px;
+    padding: 0 14px;
+    height: 34px;
     font-size: 13px;
-    font-weight: 400;
+    font-weight: 500;
     font-family: inherit;
     line-height: 1;
     text-decoration: none;
-    border: 1px solid #8c8f94;
-    border-radius: 4px;
-    background: #f6f7f7;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
+    background: #fff;
     color: #2c3338;
     cursor: pointer;
-    transition: background 0.1s, border-color 0.1s, color 0.1s, box-shadow 0.1s;
+    transition: all 0.15s ease;
     box-sizing: border-box;
     white-space: nowrap;
 }
 
 #ept-visual-sidebar .ept-btn:hover {
-    background: #f0f0f1;
+    background: #f6f7f7;
     border-color: #8c8f94;
     color: #1d2327;
 }
@@ -145,7 +146,6 @@ body.admin-bar #ept-visual-sidebar {
     background: #2271b1;
     border-color: #2271b1;
     color: #fff;
-    font-weight: 500;
 }
 
 #ept-visual-sidebar .ept-btn-primary:hover {
@@ -155,9 +155,11 @@ body.admin-bar #ept-visual-sidebar {
 }
 
 #ept-visual-sidebar .ept-btn-sm {
-    height: 26px;
-    padding: 0 8px;
+    height: 28px;
+    padding: 0 10px;
     font-size: 12px;
+    font-weight: 400;
+    border-radius: 5px;
 }
 
 #ept-visual-sidebar .ept-btn-danger {
@@ -193,6 +195,10 @@ body.admin-bar #ept-visual-sidebar {
 /* --- Select Element primary action --- */
 #ept-select-element {
     margin-top: 4px;
+    height: 40px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 6px;
 }
 
 /* Active selection state */
@@ -204,16 +210,17 @@ body.admin-bar #ept-visual-sidebar {
 
 /* --- Event list items --- */
 .ept-event-item {
-    background: #fff;
-    border: 1px solid #dcdcde;
-    border-radius: 4px;
-    padding: 12px;
-    margin-bottom: 8px;
-    transition: border-color 0.1s;
+    background: #f8f9fa;
+    border: 1px solid #f0f0f1;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .ept-event-item:hover {
-    border-color: #8c8f94;
+    border-color: #c3c4c7;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
 .ept-event-item-header {
@@ -232,39 +239,44 @@ body.admin-bar #ept-visual-sidebar {
 .ept-event-item-tag {
     flex-shrink: 0;
     display: inline-block;
-    background: #f0f0f1;
-    color: #50575e;
+    background: #e7f1fa;
+    color: #2271b1;
     font-size: 11px;
-    font-family: monospace;
-    padding: 2px 6px;
-    border-radius: 3px;
+    font-family: Menlo, Consolas, Monaco, monospace;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 500;
 }
 
 .ept-event-item-selector {
     color: #787c82;
     font-size: 11px;
-    font-family: monospace;
-    margin-top: 6px;
+    font-family: Menlo, Consolas, Monaco, monospace;
+    margin-top: 8px;
     word-break: break-all;
     line-height: 1.4;
 }
 
 .ept-event-item-actions {
-    margin-top: 10px;
+    margin-top: 12px;
     display: flex;
     gap: 6px;
 }
 
 /* --- Form styling --- */
+#ept-event-form {
+    margin-top: 20px;
+}
+
 .ept-form-group {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .ept-form-group label {
     display: block;
     font-size: 12px;
     font-weight: 600;
-    margin-bottom: 4px;
+    margin-bottom: 5px;
     color: #1d2327;
 }
 
@@ -272,43 +284,44 @@ body.admin-bar #ept-visual-sidebar {
     width: 100%;
     font-size: 13px;
     font-family: inherit;
-    padding: 6px 10px;
-    height: 32px;
-    border: 1px solid #8c8f94;
-    border-radius: 4px;
+    padding: 8px 12px;
+    height: 36px;
+    border: 1px solid #c3c4c7;
+    border-radius: 6px;
     box-sizing: border-box;
     color: #2c3338;
     background: #fff;
-    transition: border-color 0.1s, box-shadow 0.1s;
+    transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 .ept-form-group input[type="text"]:focus {
     border-color: #2271b1;
-    box-shadow: 0 0 0 1px #2271b1;
+    box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.15);
     outline: none;
 }
 
 .ept-form-group input[type="text"][readonly] {
-    background: #f6f7f7;
+    background: #f8f9fa;
     color: #50575e;
+    border-color: #e0e0e0;
 }
 
 .ept-form-actions {
     display: flex;
     gap: 8px;
-    margin-top: 14px;
+    margin-top: 16px;
 }
 
 /* --- Highlight overlay for element hover during selection --- */
 #ept-highlight-overlay {
     position: absolute;
-    background: rgba(0, 124, 186, 0.12);
+    background: rgba(34, 113, 177, 0.08);
     border: 2px solid #2271b1;
     pointer-events: none;
     z-index: 99998;
     transition: all 0.1s ease;
     box-sizing: border-box;
-    border-radius: 2px;
+    border-radius: 4px;
 }
 
 /* Prevent page interactions during selection */
@@ -318,14 +331,18 @@ body.ept-selecting-active *:not(#ept-visual-sidebar):not(#ept-visual-sidebar *):
 
 /* --- No events message --- */
 .ept-no-events {
-    color: #787c82;
-    font-style: italic;
+    color: #a7aaad;
+    font-size: 13px;
     text-align: center;
-    padding: 20px 0;
+    padding: 28px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 1px dashed #dcdcde;
+    margin: 0;
 }
 
 .ept-loading {
     color: #787c82;
     text-align: center;
-    padding: 20px 0;
+    padding: 28px 0;
 }

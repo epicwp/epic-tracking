@@ -60,6 +60,11 @@ class Admin
             'epic-tracking-all-events',
             [self::class, 'renderAllEvents']
         );
+
+        // Remove hidden pages from the sidebar menu
+        remove_submenu_page('epic-tracking', 'epic-tracking-page-detail');
+        remove_submenu_page('epic-tracking', 'epic-tracking-all-visits');
+        remove_submenu_page('epic-tracking', 'epic-tracking-all-events');
     }
 
     public static function registerSettings(): void

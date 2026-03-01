@@ -1,6 +1,6 @@
 # Epic Tracking – Easy Event Tracking for WordPress
 
-Easy event tracking for WordPress. Track clicks, form submissions, and page views — no code, no cookies, no third-party scripts.
+Easy event tracking for WordPress. Point, click, and track — no code, no tag managers, no third-party scripts.
 
 ## Visual event editor
 
@@ -33,7 +33,7 @@ Drill down into any page to see its traffic, events, and visitor breakdown.
 - **Event analytics** — See which events fire most, with trigger counts and unique visitor stats.
 - **Visit tracking** — Automatic page view logging with referrer, device, browser, OS, and country data.
 - **Country geolocation** — See where your visitors come from with automatic IP-based country detection.
-- **Privacy-first** — No cookies, no external analytics services, no personal data collection.
+- **Self-hosted** — All data stays in your WordPress database, no external analytics services.
 - **Bot filtering** — Automatically excludes known bots and crawlers.
 - **Role exclusion** — Exclude logged-in users by role from being tracked.
 

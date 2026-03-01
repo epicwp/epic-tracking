@@ -8,30 +8,34 @@ Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Easy event tracking for WordPress. Track clicks, form submissions, and page views — no code, no cookies, no third-party scripts.
+Easy event tracking for WordPress. Point, click, and track — no code, no tag managers, no third-party scripts.
 
 == Description ==
 
-Epic Tracking makes event tracking easy. Set up click and event tracking on any page without writing code — just point, click, and save. All data stays in your own database with zero external dependencies.
+Epic Tracking lets you add event tracking to any element on your WordPress site using a visual editor. Click the element you want to track, give it a name, and you're done — events start recording immediately. No code, no Google Tag Manager, no external scripts.
 
-= Visual Event Tracking — No Code Required =
+= Visual Event Editor =
 
-Track button clicks, form submissions, link clicks, CTA conversions, and custom events without Google Tag Manager or any external scripts. Open the visual editor on any page, click the element you want to track, give it a name, and you're done. Events start recording immediately.
+Open the visual editor on any page from the WordPress admin bar. Click a button, link, form, CTA, or any other element — give it a reference name and tag — and save. That's it. The event is live and tracking starts immediately.
 
-= Event Analytics Dashboard =
+* Track button clicks, form submissions, link clicks, and CTA conversions
+* Set up events in seconds with a point-and-click interface
+* Organize events with custom tags for easy filtering
+* No coding or tag manager knowledge required
 
-See exactly which events fire and how often. The built-in dashboard gives you:
+= Built-in Analytics Dashboard =
+
+The plugin includes a full analytics dashboard in your WordPress admin:
 
 * Event trigger counts with unique visitor breakdowns
-* Per-page event detail views
 * Page view statistics with date range filtering
-* Referrer, device, browser, OS, and country data per page
+* Per-page detail views with referrer, device, browser, OS, and country data
 * Daily traffic charts and trend visualization
 * Sortable tables with pagination
 
-= Privacy-First by Design =
+= Self-Hosted & Privacy-Friendly =
 
-Epic Tracking uses no cookies and stores no personal data. Visitors are identified using a non-reversible hash — fully compatible with GDPR and privacy regulations. Your event and analytics data never leaves your server.
+All tracking data stays in your WordPress database. No data is sent to third-party analytics services. Visitors are identified using a single first-party cookie — no personal data is stored or shared.
 
 = Features =
 
@@ -54,11 +58,10 @@ Epic Tracking uses no cookies and stores no personal data. Visitors are identifi
 * Monitor page views and traffic trends without Google Analytics
 * See which referrers drive the most traffic to specific pages
 * Understand visitor demographics: device type, browser, OS, and country
-* Run a cookie-free, privacy-compliant event tracking setup
 
 = Why Epic Tracking? =
 
-Most WordPress event tracking requires Google Tag Manager, custom JavaScript, or expensive third-party services. Epic Tracking gives you a visual editor to set up event tracking in seconds — no code, no external scripts, no data leaving your server. Unlike generic analytics plugins, Epic Tracking is purpose-built for tracking clicks and events on your WordPress site.
+Most WordPress event tracking requires Google Tag Manager, custom JavaScript, or expensive third-party services. Epic Tracking gives you a visual editor to set up event tracking in seconds — no code, no external scripts, no data leaving your server.
 
 == Installation ==
 
@@ -71,7 +74,7 @@ Most WordPress event tracking requires Google Tag Manager, custom JavaScript, or
 
 = Does this plugin use cookies? =
 
-No. Epic Tracking does not set any cookies. Visitors are identified using a non-reversible hash of their IP address and user agent.
+Epic Tracking sets a single first-party cookie (`ept_visitor_id`) to identify returning visitors across page views. No personal data is stored in this cookie — it contains only a randomly generated anonymous identifier.
 
 = Does this plugin send data to external services? =
 
@@ -79,7 +82,7 @@ All tracking data is stored in your WordPress database. The only external reques
 
 = Is this plugin GDPR compliant? =
 
-Epic Tracking is designed with privacy in mind. It stores no personal data, uses no cookies, and keeps all data on your own server. No data is shared with third parties.
+Epic Tracking is designed with privacy in mind. It stores no personal data and keeps all data on your own server. The only cookie used contains a random anonymous identifier — no personal information. No data is shared with third parties.
 
 = Will this slow down my site? =
 
@@ -95,7 +98,7 @@ Yes. The dashboard shows a sortable table of all pages with total visits and uni
 
 = How are visitors identified? =
 
-Visitors are assigned a non-reversible hashed identifier based on their IP address and user agent. No cookies are used and no personal data is stored.
+Visitors are assigned a randomly generated anonymous identifier stored in a first-party cookie. No personal data is stored.
 
 = What happens when I uninstall the plugin? =
 

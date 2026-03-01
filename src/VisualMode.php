@@ -32,10 +32,10 @@ class VisualMode
 
         $adminBar->add_node([
             'id'    => 'epic-tracking',
-            'title' => 'Edit Tracking',
+            'title' => __('Edit Tracking', 'epic-tracking'),
             'href'  => $visualUrl,
             'meta'  => [
-                'title' => 'Set up event tracking on this page',
+                'title' => __('Set up event tracking on this page', 'epic-tracking'),
             ],
         ]);
     }
@@ -73,7 +73,7 @@ class VisualMode
     {
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Unauthorized', 403);
+            wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
         }
 
@@ -92,13 +92,13 @@ class VisualMode
     {
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Unauthorized', 403);
+            wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
         }
 
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) {
-            wp_send_json_error('Missing event ID', 400);
+            wp_send_json_error(__('Missing event ID', 'epic-tracking'), 400);
             return;
         }
 
@@ -115,13 +115,13 @@ class VisualMode
     {
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Unauthorized', 403);
+            wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
         }
 
         $id = (int) ($_POST['id'] ?? 0);
         if (!$id) {
-            wp_send_json_error('Missing event ID', 400);
+            wp_send_json_error(__('Missing event ID', 'epic-tracking'), 400);
             return;
         }
 
@@ -133,7 +133,7 @@ class VisualMode
     {
         check_ajax_referer('ept_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
-            wp_send_json_error('Unauthorized', 403);
+            wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
         }
 

@@ -1,12 +1,12 @@
 <div class="wrap">
-    <h1>Epic Tracking Settings</h1>
+    <h1><?php echo esc_html__('Epic Tracking Settings', 'epic-tracking'); ?></h1>
 
     <form method="post" action="options.php">
         <?php settings_fields('ept_settings_group'); ?>
 
         <table class="form-table">
             <tr>
-                <th scope="row">Exclude Roles from Tracking</th>
+                <th scope="row"><?php echo esc_html__('Exclude Roles from Tracking', 'epic-tracking'); ?></th>
                 <td>
                     <fieldset>
                         <?php foreach ($allRoles as $slug => $name) : ?>
@@ -18,7 +18,7 @@
                                 <?php echo esc_html($name); ?>
                             </label><br>
                         <?php endforeach; ?>
-                        <p class="description">Visits and events from these roles will not be tracked.</p>
+                        <p class="description"><?php echo esc_html__('Visits and events from these roles will not be tracked.', 'epic-tracking'); ?></p>
                     </fieldset>
                 </td>
             </tr>

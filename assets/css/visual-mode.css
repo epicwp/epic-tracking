@@ -346,3 +346,27 @@ body.ept-selecting-active *:not(#ept-visual-sidebar):not(#ept-visual-sidebar *):
     text-align: center;
     padding: 28px 0;
 }
+
+/* --- Button loading state --- */
+@keyframes ept-spin {
+    to { transform: rotate(360deg); }
+}
+
+#ept-visual-sidebar .ept-btn-loading {
+    pointer-events: none;
+    opacity: 0.7;
+    position: relative;
+}
+
+#ept-visual-sidebar .ept-btn-loading::after {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: ept-spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-left: 6px;
+}

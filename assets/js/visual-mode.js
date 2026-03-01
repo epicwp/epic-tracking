@@ -126,7 +126,7 @@
         // Bind delete buttons
         eventsContainer.querySelectorAll('.ept-delete-event').forEach(function (btn) {
             btn.addEventListener('click', function () {
-                deleteEvent(parseInt(this.getAttribute('data-id')));
+                deleteEvent(parseInt(this.getAttribute('data-id')), this);
             });
         });
 
@@ -260,6 +260,12 @@
             return;
         }
 
+        var saveBtn = document.getElementById('ept-save-event');
+        var originalText = saveBtn.textContent;
+        saveBtn.classList.add('ept-btn-loading');
+        saveBtn.disabled = true;
+        saveBtn.textContent = 'Saving...';
+
         var formData = new FormData();
         formData.append('action', 'ept_save_event');
         formData.append('nonce', config.nonce);
@@ -275,12 +281,23 @@
                     eventForm.style.display = 'none';
                     loadEvents();
                 }
+            })
+            .catch(function () {})
+            .then(function () {
+                saveBtn.classList.remove('ept-btn-loading');
+                saveBtn.disabled = false;
+                saveBtn.textContent = originalText;
             });
     }
 
     // --- Delete event ---
-    function deleteEvent(id) {
+    function deleteEvent(id, btn) {
         if (!confirm('Delete this event?')) return;
+
+        var originalText = btn.innerHTML;
+        btn.classList.add('ept-btn-loading');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="dashicons dashicons-trash"></span> Deleting...';
 
         var formData = new FormData();
         formData.append('action', 'ept_delete_event');
@@ -293,6 +310,12 @@
                 if (res.success) {
                     loadEvents();
                 }
+            })
+            .catch(function () {})
+            .then(function () {
+                btn.classList.remove('ept-btn-loading');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
             });
     }
 

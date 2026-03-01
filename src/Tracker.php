@@ -60,7 +60,7 @@ class Tracker
         $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? '');
 
         if (empty($visitorId) || empty($pageUrl)) {
-            wp_send_json_error('Missing required fields', 400);
+            wp_send_json_error(__('Missing required fields', 'epic-tracking'), 400);
             return;
         }
 
@@ -70,7 +70,9 @@ class Tracker
         }
 
         $parsed = UserAgentParser::parse($userAgent);
-        Database::logVisit($visitorId, $pageUrl, $referrer, $userAgent, $parsed['device_type'], $parsed['browser'], $parsed['os']);
+        $ip  = $_SERVER['REMOTE_ADDR'] ?? '';
+        $geo = GeoIP::lookup($ip);
+        Database::logVisit($visitorId, $pageUrl, $referrer, $userAgent, $parsed['device_type'], $parsed['browser'], $parsed['os'], $geo['country'], $geo['country_code']);
         wp_send_json_success();
     }
 
@@ -82,7 +84,7 @@ class Tracker
         $userAgent = sanitize_text_field($_SERVER['HTTP_USER_AGENT'] ?? '');
 
         if (empty($eventId) || empty($visitorId) || empty($pageUrl)) {
-            wp_send_json_error('Missing required fields', 400);
+            wp_send_json_error(__('Missing required fields', 'epic-tracking'), 400);
             return;
         }
 

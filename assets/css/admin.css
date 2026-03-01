@@ -217,7 +217,14 @@
 /* Dashboard grid */
 .ept-dashboard-grid {
     display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 20px;
+}
+
+@media (max-width: 782px) {
+    .ept-dashboard-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* Section cards */

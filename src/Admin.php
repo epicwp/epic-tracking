@@ -13,8 +13,8 @@ class Admin
     public static function addMenuPages(): void
     {
         add_menu_page(
-            'Tracking',
-            'Tracking',
+            __('Tracking', 'epic-tracking'),
+            __('Tracking', 'epic-tracking'),
             'manage_options',
             'epic-tracking',
             [self::class, 'renderDashboard'],
@@ -24,8 +24,8 @@ class Admin
 
         add_submenu_page(
             'epic-tracking',
-            'Settings',
-            'Settings',
+            __('Settings', 'epic-tracking'),
+            __('Settings', 'epic-tracking'),
             'manage_options',
             'epic-tracking-settings',
             [self::class, 'renderSettings']
@@ -34,7 +34,7 @@ class Admin
         // Page detail — registered under parent for proper WP globals, hidden via CSS
         add_submenu_page(
             'epic-tracking',
-            'Page Detail',
+            __('Page Detail', 'epic-tracking'),
             '',
             'manage_options',
             'epic-tracking-page-detail',
@@ -96,6 +96,9 @@ class Admin
         // Daily breakdown
         $dailyVisits = Database::getDailyVisits($sqlFrom, $sqlTo);
 
+        // Top countries
+        $topCountries = Database::getTopCountries($sqlFrom, $sqlTo);
+
         // Paginated table data
         $visitStats      = Database::getVisitStats($sqlFrom, $sqlTo, self::PER_PAGE, $visitPage);
         $visitTotalPages = (int) ceil(Database::getVisitStatsCount($sqlFrom, $sqlTo) / self::PER_PAGE);
@@ -113,7 +116,7 @@ class Admin
 
         $pageUrl = sanitize_text_field($_GET['page_url'] ?? '');
         if ($pageUrl === '') {
-            wp_die('Missing page URL.');
+            wp_die(__('Missing page URL.', 'epic-tracking'));
         }
 
         // Date range — same logic as dashboard
@@ -138,6 +141,7 @@ class Admin
         $devices    = Database::getPageDeviceBreakdown($pageUrl, $sqlFrom, $sqlTo);
         $browsers   = Database::getPageBrowserBreakdown($pageUrl, $sqlFrom, $sqlTo);
         $osList     = Database::getPageOsBreakdown($pageUrl, $sqlFrom, $sqlTo);
+        $countries  = Database::getPageCountryBreakdown($pageUrl, $sqlFrom, $sqlTo);
         $events     = Database::getPageEvents($pageUrl, $sqlFrom, $sqlTo);
 
         include EPT_PLUGIN_DIR . 'templates/admin-page-detail.php';

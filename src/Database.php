@@ -4,7 +4,7 @@ namespace EpicTracking;
 
 class Database
 {
-    const DB_VERSION = '1.1.0';
+    const DB_VERSION = '1.2.0';
     const DB_VERSION_OPTION = 'ept_db_version';
 
     public static function init(): void
@@ -54,6 +54,8 @@ class Database
             device_type varchar(20) NOT NULL DEFAULT '',
             browser varchar(50) NOT NULL DEFAULT '',
             os varchar(50) NOT NULL DEFAULT '',
+            country varchar(100) NOT NULL DEFAULT '',
+            country_code varchar(2) NOT NULL DEFAULT '',
             created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
             PRIMARY KEY (id),
             KEY visitor_id (visitor_id),
@@ -61,7 +63,8 @@ class Database
             KEY created_at (created_at),
             KEY device_type (device_type),
             KEY browser (browser),
-            KEY os (os)
+            KEY os (os),
+            KEY country_code (country_code)
         ) $charset;
 
         CREATE TABLE {$wpdb->prefix}ept_event_log (
@@ -126,17 +129,19 @@ class Database
         return (bool) $wpdb->delete("{$wpdb->prefix}ept_events", ['id' => $id]);
     }
 
-    public static function logVisit(string $visitorId, string $pageUrl, string $referrer, string $userAgent, string $deviceType = '', string $browser = '', string $os = ''): void
+    public static function logVisit(string $visitorId, string $pageUrl, string $referrer, string $userAgent, string $deviceType = '', string $browser = '', string $os = '', string $country = '', string $countryCode = ''): void
     {
         global $wpdb;
         $wpdb->insert("{$wpdb->prefix}ept_visits", [
-            'visitor_id'  => $visitorId,
-            'page_url'    => $pageUrl,
-            'referrer'    => $referrer,
-            'user_agent'  => $userAgent,
-            'device_type' => $deviceType,
-            'browser'     => $browser,
-            'os'          => $os,
+            'visitor_id'   => $visitorId,
+            'page_url'     => $pageUrl,
+            'referrer'     => $referrer,
+            'user_agent'   => $userAgent,
+            'device_type'  => $deviceType,
+            'browser'      => $browser,
+            'os'           => $os,
+            'country'      => $country,
+            'country_code' => $countryCode,
         ]);
     }
 
@@ -226,6 +231,7 @@ class Database
                 )
             );
         }
+        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
         return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}ept_events");
     }
 
@@ -397,6 +403,41 @@ class Database
                  GROUP BY e.id
                  ORDER BY total_triggers DESC",
                 $dateFrom, $dateTo, $pageUrl
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getPageCountryBreakdown(string $pageUrl, string $dateFrom, string $dateTo): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT country, COUNT(*) as visits
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE page_url = %s AND created_at >= %s AND created_at < %s
+                       AND country != ''
+                 GROUP BY country
+                 ORDER BY visits DESC",
+                $pageUrl, $dateFrom, $dateTo
+            ),
+            ARRAY_A
+        );
+    }
+
+    public static function getTopCountries(string $dateFrom, string $dateTo, int $limit = 10): array
+    {
+        global $wpdb;
+        return $wpdb->get_results(
+            $wpdb->prepare(
+                "SELECT country, country_code, COUNT(*) as visits
+                 FROM {$wpdb->prefix}ept_visits
+                 WHERE created_at >= %s AND created_at < %s
+                       AND country != ''
+                 GROUP BY country, country_code
+                 ORDER BY visits DESC
+                 LIMIT %d",
+                $dateFrom, $dateTo, $limit
             ),
             ARRAY_A
         );

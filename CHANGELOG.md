@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/epicwp/epic-tracking/compare/v1.3.4...v1.3.5) (2026-03-04)
+
+
+### Bug Fixes
+
+* resolve remaining Plugin Check warnings for WordPress.org submission ([3aa2dce](https://github.com/epicwp/epic-tracking/commit/3aa2dce4f741de08c5e0f7e9538b19d2fab12f20))
+
 ## [1.3.4](https://github.com/epicwp/epic-tracking/compare/v1.3.3...v1.3.4) (2026-03-01)
 
 

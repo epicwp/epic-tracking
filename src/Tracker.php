@@ -57,12 +57,13 @@ class Tracker
         ]);
     }
 
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
+    // phpcs:disable WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
     public static function handleTrackVisit(): void
     {
         $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
         $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
         $referrer  = sanitize_text_field(wp_unslash($_POST['referrer'] ?? ''));
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
         $userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''));
 
         if (empty($visitorId) || empty($pageUrl)) {
@@ -82,12 +83,13 @@ class Tracker
         wp_send_json_success();
     }
 
-    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
+    // phpcs:disable WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
     public static function handleTrackEvent(): void
     {
         $eventId   = absint(wp_unslash($_POST['event_id'] ?? 0));
         $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
         $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
+        // phpcs:enable WordPress.Security.NonceVerification.Missing
         $userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''));
 
         if (empty($eventId) || empty($visitorId) || empty($pageUrl)) {

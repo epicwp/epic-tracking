@@ -206,7 +206,7 @@ class Database
         }
         $order = strtoupper($order) === 'ASC' ? 'ASC' : 'DESC';
         $offset = ($page - 1) * $perPage;
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $orderBy and $order are whitelisted above.
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $orderBy and $order are whitelisted above.
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT page_url,
@@ -221,6 +221,7 @@ class Database
             ),
             ARRAY_A
         );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
     }
 
     public static function getEventSummary(string $dateFrom, string $dateTo): array
@@ -273,7 +274,7 @@ class Database
         }
         $params[] = $perPage;
         $params[] = $offset;
-        // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $orderBy, $order, and $where are whitelisted/controlled above; $params is built dynamically.
+        // phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, PluginCheck.Security.DirectDB.UnescapedDBParameter -- $orderBy, $order, and $where are whitelisted/controlled above; $params is built dynamically.
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT e.id, e.reference_name, e.event_tag, e.event_type, e.page_url,
@@ -290,6 +291,7 @@ class Database
             ),
             ARRAY_A
         );
+        // phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.ReplacementsWrongNumber, PluginCheck.Security.DirectDB.UnescapedDBParameter
     }
 
     // ── Page detail & daily breakdown queries ──────────────────────────

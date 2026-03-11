@@ -1,9 +1,9 @@
 (function () {
     'use strict';
 
-    if (typeof eptConfig === 'undefined') return;
+    if (typeof epictrConfig === 'undefined') return;
 
-    var COOKIE_NAME = 'ept_visitor_id';
+    var COOKIE_NAME = 'epictr_visitor_id';
     var COOKIE_DAYS = 365;
 
     function getVisitorId() {
@@ -27,15 +27,16 @@
     function sendBeacon(action, data) {
         var formData = new FormData();
         formData.append('action', action);
+        formData.append('nonce', epictrConfig.nonce);
         for (var key in data) {
             formData.append(key, data[key]);
         }
 
         if (navigator.sendBeacon) {
-            navigator.sendBeacon(eptConfig.ajaxUrl, formData);
+            navigator.sendBeacon(epictrConfig.ajaxUrl, formData);
         } else {
             var xhr = new XMLHttpRequest();
-            xhr.open('POST', eptConfig.ajaxUrl, true);
+            xhr.open('POST', epictrConfig.ajaxUrl, true);
             xhr.send(formData);
         }
     }
@@ -44,31 +45,31 @@
     var visitorId = getVisitorId();
 
     // Track page visit
-    sendBeacon('ept_track_visit', {
+    sendBeacon('epictr_track_visit', {
         visitor_id: visitorId,
-        page_url: eptConfig.pageUrl,
+        page_url: epictrConfig.pageUrl,
         referrer: document.referrer || '',
     });
 
     // Bind configured events
-    if (eptConfig.events && eptConfig.events.length > 0) {
-        // Set data-ept-id on matched elements
-        eptConfig.events.forEach(function (evt) {
+    if (epictrConfig.events && epictrConfig.events.length > 0) {
+        // Set data-epictr-id on matched elements
+        epictrConfig.events.forEach(function (evt) {
             var el = document.querySelector(evt.selector);
             if (el) {
-                el.setAttribute('data-ept-id', evt.id);
+                el.setAttribute('data-epictr-id', evt.id);
             }
         });
 
         // Single delegated click listener
         document.addEventListener('click', function (e) {
-            var target = e.target.closest('[data-ept-id]');
+            var target = e.target.closest('[data-epictr-id]');
             if (!target) return;
 
-            sendBeacon('ept_track_event', {
-                event_id: target.getAttribute('data-ept-id'),
+            sendBeacon('epictr_track_event', {
+                event_id: target.getAttribute('data-epictr-id'),
                 visitor_id: visitorId,
-                page_url: eptConfig.pageUrl,
+                page_url: epictrConfig.pageUrl,
             });
         });
     }

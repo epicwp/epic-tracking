@@ -1,9 +1,9 @@
 (function () {
     'use strict';
 
-    if (typeof eptVisualConfig === 'undefined') return;
+    if (typeof epictrVisualConfig === 'undefined') return;
 
-    var config = eptVisualConfig;
+    var config = epictrVisualConfig;
     var isSelecting = false;
     var highlightOverlay = null;
     var sidebar = null;
@@ -17,52 +17,52 @@
     // --- Build sidebar UI ---
     function buildSidebar() {
         sidebar = document.createElement('div');
-        sidebar.id = 'ept-visual-sidebar';
+        sidebar.id = 'epictr-visual-sidebar';
         sidebar.innerHTML =
-            '<div class="ept-sidebar-header">'
+            '<div class="epictr-sidebar-header">'
             + '<h2><span class="dashicons dashicons-chart-bar"></span> Tracking</h2>'
-            + '<a href="' + escAttr(config.exitUrl) + '" class="ept-close-btn">&times;</a>'
+            + '<a href="' + escAttr(config.exitUrl) + '" class="epictr-close-btn">&times;</a>'
             + '</div>'
-            + '<div class="ept-sidebar-content">'
-            + '<div id="ept-events-list">'
+            + '<div class="epictr-sidebar-content">'
+            + '<div id="epictr-events-list">'
             + '<h3><span class="dashicons dashicons-admin-links"></span> Configured Events</h3>'
-            + '<div id="ept-events-container">'
-            + '<p class="ept-loading">Loading events...</p>'
+            + '<div id="epictr-events-container">'
+            + '<p class="epictr-loading">Loading events...</p>'
             + '</div>'
             + '</div>'
             + '<hr>'
-            + '<button id="ept-select-element" class="ept-btn ept-btn-primary ept-btn-full"><span class="dashicons dashicons-plus-alt2"></span> Select Element</button>'
-            + '<div id="ept-event-form" style="display:none;">'
+            + '<button id="epictr-select-element" class="epictr-btn epictr-btn-primary epictr-btn-full"><span class="dashicons dashicons-plus-alt2"></span> Select Element</button>'
+            + '<div id="epictr-event-form" style="display:none;">'
             + '<h3><span class="dashicons dashicons-edit"></span> Configure Event</h3>'
-            + '<div class="ept-form-group">'
-            + '<label for="ept-selector">Selector</label>'
-            + '<input type="text" id="ept-selector" readonly>'
+            + '<div class="epictr-form-group">'
+            + '<label for="epictr-selector">Selector</label>'
+            + '<input type="text" id="epictr-selector" readonly>'
             + '</div>'
-            + '<div class="ept-form-group">'
-            + '<label for="ept-reference-name">Reference Name</label>'
-            + '<input type="text" id="ept-reference-name" placeholder="e.g. CTA Button Hero">'
+            + '<div class="epictr-form-group">'
+            + '<label for="epictr-reference-name">Reference Name</label>'
+            + '<input type="text" id="epictr-reference-name" placeholder="e.g. CTA Button Hero">'
             + '</div>'
-            + '<div class="ept-form-group">'
-            + '<label for="ept-event-tag">Event Tag</label>'
-            + '<input type="text" id="ept-event-tag" placeholder="e.g. cta_hero_click">'
+            + '<div class="epictr-form-group">'
+            + '<label for="epictr-event-tag">Event Tag</label>'
+            + '<input type="text" id="epictr-event-tag" placeholder="e.g. cta_hero_click">'
             + '</div>'
-            + '<div class="ept-form-actions">'
-            + '<button id="ept-save-event" class="ept-btn ept-btn-primary">Save Event</button>'
-            + '<button id="ept-cancel-event" class="ept-btn">Cancel</button>'
+            + '<div class="epictr-form-actions">'
+            + '<button id="epictr-save-event" class="epictr-btn epictr-btn-primary">Save Event</button>'
+            + '<button id="epictr-cancel-event" class="epictr-btn">Cancel</button>'
             + '</div>'
             + '</div>'
             + '</div>';
 
         document.body.appendChild(sidebar);
-        document.body.classList.add('ept-visual-mode-active');
+        document.body.classList.add('epictr-visual-mode-active');
 
         // Cache references
-        eventsContainer = document.getElementById('ept-events-container');
-        eventForm = document.getElementById('ept-event-form');
-        selectorInput = document.getElementById('ept-selector');
-        referenceInput = document.getElementById('ept-reference-name');
-        eventTagInput = document.getElementById('ept-event-tag');
-        selectBtn = document.getElementById('ept-select-element');
+        eventsContainer = document.getElementById('epictr-events-container');
+        eventForm = document.getElementById('epictr-event-form');
+        selectorInput = document.getElementById('epictr-selector');
+        referenceInput = document.getElementById('epictr-reference-name');
+        eventTagInput = document.getElementById('epictr-event-tag');
+        selectBtn = document.getElementById('epictr-select-element');
 
         // Bind sidebar buttons
         selectBtn.addEventListener('click', function () {
@@ -73,14 +73,14 @@
             }
         });
 
-        document.getElementById('ept-save-event').addEventListener('click', saveEvent);
-        document.getElementById('ept-cancel-event').addEventListener('click', function () {
+        document.getElementById('epictr-save-event').addEventListener('click', saveEvent);
+        document.getElementById('epictr-cancel-event').addEventListener('click', function () {
             eventForm.style.display = 'none';
         });
 
         // Create highlight overlay for hover effect
         highlightOverlay = document.createElement('div');
-        highlightOverlay.id = 'ept-highlight-overlay';
+        highlightOverlay.id = 'epictr-highlight-overlay';
         highlightOverlay.style.display = 'none';
         document.body.appendChild(highlightOverlay);
     }
@@ -88,7 +88,7 @@
     // --- Load events ---
     function loadEvents() {
         var formData = new FormData();
-        formData.append('action', 'ept_get_page_events');
+        formData.append('action', 'epictr_get_page_events');
         formData.append('nonce', config.nonce);
         formData.append('page_url', config.pageUrl);
 
@@ -103,35 +103,35 @@
 
     function renderEvents(events) {
         if (!events || events.length === 0) {
-            eventsContainer.innerHTML = '<p class="ept-no-events">No events configured for this page.</p>';
+            eventsContainer.innerHTML = '<p class="epictr-no-events">No events configured for this page.</p>';
             return;
         }
 
         var html = '';
         events.forEach(function (evt) {
-            html += '<div class="ept-event-item" data-event-id="' + evt.id + '">'
-                + '<div class="ept-event-item-header">'
-                + '<span class="ept-event-item-name">' + escHtml(evt.reference_name) + '</span>'
-                + '<span class="ept-event-item-tag">' + escHtml(evt.event_tag) + '</span>'
+            html += '<div class="epictr-event-item" data-event-id="' + evt.id + '">'
+                + '<div class="epictr-event-item-header">'
+                + '<span class="epictr-event-item-name">' + escHtml(evt.reference_name) + '</span>'
+                + '<span class="epictr-event-item-tag">' + escHtml(evt.event_tag) + '</span>'
                 + '</div>'
-                + '<div class="ept-event-item-selector">' + escHtml(evt.selector) + '</div>'
-                + '<div class="ept-event-item-actions">'
-                + '<button class="ept-btn ept-btn-sm ept-highlight-event" data-selector="' + escAttr(evt.selector) + '"><span class="dashicons dashicons-visibility"></span> Highlight</button>'
-                + '<button class="ept-btn ept-btn-sm ept-btn-danger ept-delete-event" data-id="' + evt.id + '"><span class="dashicons dashicons-trash"></span> Delete</button>'
+                + '<div class="epictr-event-item-selector">' + escHtml(evt.selector) + '</div>'
+                + '<div class="epictr-event-item-actions">'
+                + '<button class="epictr-btn epictr-btn-sm epictr-highlight-event" data-selector="' + escAttr(evt.selector) + '"><span class="dashicons dashicons-visibility"></span> Highlight</button>'
+                + '<button class="epictr-btn epictr-btn-sm epictr-btn-danger epictr-delete-event" data-id="' + evt.id + '"><span class="dashicons dashicons-trash"></span> Delete</button>'
                 + '</div>'
                 + '</div>';
         });
         eventsContainer.innerHTML = html;
 
         // Bind delete buttons
-        eventsContainer.querySelectorAll('.ept-delete-event').forEach(function (btn) {
+        eventsContainer.querySelectorAll('.epictr-delete-event').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 deleteEvent(parseInt(this.getAttribute('data-id')), this);
             });
         });
 
         // Bind highlight buttons
-        eventsContainer.querySelectorAll('.ept-highlight-event').forEach(function (btn) {
+        eventsContainer.querySelectorAll('.epictr-highlight-event').forEach(function (btn) {
             btn.addEventListener('click', function () {
                 highlightElement(this.getAttribute('data-selector'));
             });
@@ -142,7 +142,7 @@
     function startSelecting() {
         isSelecting = true;
         selectBtn.textContent = 'Cancel Selection';
-        document.body.classList.add('ept-selecting-active');
+        document.body.classList.add('epictr-selecting-active');
 
         document.addEventListener('mouseover', onMouseOver, true);
         document.addEventListener('click', onClick, true);
@@ -151,7 +151,7 @@
     function stopSelecting() {
         isSelecting = false;
         selectBtn.textContent = 'Select Element';
-        document.body.classList.remove('ept-selecting-active');
+        document.body.classList.remove('epictr-selecting-active');
         highlightOverlay.style.display = 'none';
 
         document.removeEventListener('mouseover', onMouseOver, true);
@@ -191,8 +191,8 @@
     }
 
     function isSidebarElement(el) {
-        return el.closest('#ept-visual-sidebar') !== null
-            || el.closest('#ept-highlight-overlay') !== null
+        return el.closest('#epictr-visual-sidebar') !== null
+            || el.closest('#epictr-highlight-overlay') !== null
             || el.closest('#wpadminbar') !== null;
     }
 
@@ -260,14 +260,14 @@
             return;
         }
 
-        var saveBtn = document.getElementById('ept-save-event');
+        var saveBtn = document.getElementById('epictr-save-event');
         var originalText = saveBtn.textContent;
-        saveBtn.classList.add('ept-btn-loading');
+        saveBtn.classList.add('epictr-btn-loading');
         saveBtn.disabled = true;
         saveBtn.textContent = 'Saving...';
 
         var formData = new FormData();
-        formData.append('action', 'ept_save_event');
+        formData.append('action', 'epictr_save_event');
         formData.append('nonce', config.nonce);
         formData.append('page_url', config.pageUrl);
         formData.append('selector', selector);
@@ -284,7 +284,7 @@
             })
             .catch(function () {})
             .then(function () {
-                saveBtn.classList.remove('ept-btn-loading');
+                saveBtn.classList.remove('epictr-btn-loading');
                 saveBtn.disabled = false;
                 saveBtn.textContent = originalText;
             });
@@ -295,12 +295,12 @@
         if (!confirm('Delete this event?')) return;
 
         var originalText = btn.innerHTML;
-        btn.classList.add('ept-btn-loading');
+        btn.classList.add('epictr-btn-loading');
         btn.disabled = true;
         btn.innerHTML = '<span class="dashicons dashicons-trash"></span> Deleting...';
 
         var formData = new FormData();
-        formData.append('action', 'ept_delete_event');
+        formData.append('action', 'epictr_delete_event');
         formData.append('nonce', config.nonce);
         formData.append('id', id);
 
@@ -313,7 +313,7 @@
             })
             .catch(function () {})
             .then(function () {
-                btn.classList.remove('ept-btn-loading');
+                btn.classList.remove('epictr-btn-loading');
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             });

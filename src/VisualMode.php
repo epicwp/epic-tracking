@@ -14,14 +14,14 @@ class VisualMode
             add_action('admin_bar_menu', [self::class, 'addAdminBarButton'], 100);
         }
 
-        // Enqueue visual mode assets when ?ept_visual_mode=1
+        // Enqueue visual mode assets when ?epictr_visual_mode=1
         add_action('wp_enqueue_scripts', [self::class, 'maybeEnqueueVisualMode']);
 
         // AJAX endpoints for event management
-        add_action('wp_ajax_ept_save_event', [self::class, 'handleSaveEvent']);
-        add_action('wp_ajax_ept_update_event', [self::class, 'handleUpdateEvent']);
-        add_action('wp_ajax_ept_delete_event', [self::class, 'handleDeleteEvent']);
-        add_action('wp_ajax_ept_get_page_events', [self::class, 'handleGetPageEvents']);
+        add_action('wp_ajax_epictr_save_event', [self::class, 'handleSaveEvent']);
+        add_action('wp_ajax_epictr_update_event', [self::class, 'handleUpdateEvent']);
+        add_action('wp_ajax_epictr_delete_event', [self::class, 'handleDeleteEvent']);
+        add_action('wp_ajax_epictr_get_page_events', [self::class, 'handleGetPageEvents']);
     }
 
     public static function addAdminBarButton(\WP_Admin_Bar $adminBar): void
@@ -32,7 +32,7 @@ class VisualMode
 
         $requestUri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
         $currentUrl = home_url($requestUri);
-        $visualUrl = add_query_arg('ept_visual_mode', '1', $currentUrl);
+        $visualUrl = add_query_arg('epictr_visual_mode', '1', $currentUrl);
 
         $adminBar->add_node([
             'id'    => 'epic-tracking',
@@ -47,7 +47,7 @@ class VisualMode
     public static function maybeEnqueueVisualMode(): void
     {
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- query param check, not form processing
-        if (!isset($_GET['ept_visual_mode']) || sanitize_text_field(wp_unslash($_GET['ept_visual_mode'])) !== '1') {
+        if (!isset($_GET['epictr_visual_mode']) || sanitize_text_field(wp_unslash($_GET['epictr_visual_mode'])) !== '1') {
             return;
         }
 
@@ -57,18 +57,18 @@ class VisualMode
 
         $requestUri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'] ?? '/'));
         $pageUrl = wp_parse_url(
-            remove_query_arg('ept_visual_mode', home_url($requestUri)),
+            remove_query_arg('epictr_visual_mode', home_url($requestUri)),
             PHP_URL_PATH
         ) ?: '/';
 
-        $exitUrl = remove_query_arg('ept_visual_mode', $requestUri);
+        $exitUrl = remove_query_arg('epictr_visual_mode', $requestUri);
 
         wp_enqueue_style('dashicons');
-        wp_enqueue_style('ept-visual-mode', EPT_PLUGIN_URL . 'assets/css/visual-mode.css', ['dashicons'], EPT_VERSION);
-        wp_enqueue_script('ept-visual-mode', EPT_PLUGIN_URL . 'assets/js/visual-mode.js', [], EPT_VERSION, true);
-        wp_localize_script('ept-visual-mode', 'eptVisualConfig', [
+        wp_enqueue_style('epictr-visual-mode', EPICTR_PLUGIN_URL . 'assets/css/visual-mode.css', ['dashicons'], EPICTR_VERSION);
+        wp_enqueue_script('epictr-visual-mode', EPICTR_PLUGIN_URL . 'assets/js/visual-mode.js', [], EPICTR_VERSION, true);
+        wp_localize_script('epictr-visual-mode', 'epictrVisualConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('ept_visual_mode'),
+            'nonce'   => wp_create_nonce('epictr_visual_mode'),
             'pageUrl' => $pageUrl,
             'exitUrl' => $exitUrl,
         ]);
@@ -76,7 +76,7 @@ class VisualMode
 
     public static function handleSaveEvent(): void
     {
-        check_ajax_referer('ept_visual_mode', 'nonce');
+        check_ajax_referer('epictr_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
@@ -95,7 +95,7 @@ class VisualMode
 
     public static function handleUpdateEvent(): void
     {
-        check_ajax_referer('ept_visual_mode', 'nonce');
+        check_ajax_referer('epictr_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
@@ -118,7 +118,7 @@ class VisualMode
 
     public static function handleDeleteEvent(): void
     {
-        check_ajax_referer('ept_visual_mode', 'nonce');
+        check_ajax_referer('epictr_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;
@@ -136,7 +136,7 @@ class VisualMode
 
     public static function handleGetPageEvents(): void
     {
-        check_ajax_referer('ept_visual_mode', 'nonce');
+        check_ajax_referer('epictr_visual_mode', 'nonce');
         if (!current_user_can('manage_options')) {
             wp_send_json_error(__('Unauthorized', 'epic-tracking'), 403);
             return;

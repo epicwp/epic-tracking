@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     <h1><?php echo esc_html__('Epic Tracking Settings', 'epic-tracking'); ?></h1>
 
     <form method="post" action="options.php">
-        <?php settings_fields('ept_settings_group'); ?>
+        <?php settings_fields('epictr_settings_group'); ?>
 
         <table class="form-table">
             <tr>
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
                         <?php foreach ($allRoles as $slug => $name) : ?>
                             <label>
                                 <input type="checkbox"
-                                       name="ept_settings[excluded_roles][]"
+                                       name="epictr_settings[excluded_roles][]"
                                        value="<?php echo esc_attr($slug); ?>"
                                        <?php checked(in_array($slug, $settings['excluded_roles'])); ?>>
                                 <?php echo esc_html($name); ?>

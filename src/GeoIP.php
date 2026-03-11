@@ -14,7 +14,7 @@ class GeoIP
         }
 
         // Check transient cache
-        $cacheKey = 'ept_geo_' . md5($ip);
+        $cacheKey = 'epictr_geo_' . md5($ip);
         $cached = get_transient($cacheKey);
         if ($cached !== false) {
             return $cached;

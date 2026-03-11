@@ -11,9 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 global $wpdb;
 
-$events_table    = $wpdb->prefix . 'ept_events';
-$visits_table    = $wpdb->prefix . 'ept_visits';
-$event_log_table = $wpdb->prefix . 'ept_event_log';
+$events_table    = $wpdb->prefix . 'epictr_events';
+$visits_table    = $wpdb->prefix . 'epictr_visits';
+$event_log_table = $wpdb->prefix . 'epictr_event_log';
 
 // Check tables exist.
 if ( ! $wpdb->get_var( "SHOW TABLES LIKE '{$events_table}'" ) ) {
@@ -147,7 +147,7 @@ $country_codes = array(
 /**
  * Pick a random item from a weighted array.
  */
-function ept_weighted_random( $items ) {
+function epictr_weighted_random( $items ) {
 	$total = array_sum( $items );
 	$rand  = wp_rand( 1, $total );
 	$sum   = 0;
@@ -185,12 +185,12 @@ for ( $day = 29; $day >= 0; $day-- ) {
 
 		$timestamp = sprintf( '%s %02d:%02d:%02d', $date, $hour, $minute, $second );
 
-		$page     = ept_weighted_random( $pages );
-		$referrer = ept_weighted_random( $referrers );
-		$device   = ept_weighted_random( $devices );
-		$browser  = ept_weighted_random( $browsers );
-		$os       = ept_weighted_random( $os_list );
-		$country  = ept_weighted_random( $countries );
+		$page     = epictr_weighted_random( $pages );
+		$referrer = epictr_weighted_random( $referrers );
+		$device   = epictr_weighted_random( $devices );
+		$browser  = epictr_weighted_random( $browsers );
+		$os       = epictr_weighted_random( $os_list );
+		$country  = epictr_weighted_random( $countries );
 		$code     = $country_codes[ $country ];
 		$visitor  = $visitor_ids[ wp_rand( 0, count( $visitor_ids ) - 1 ) ];
 
@@ -268,7 +268,7 @@ for ( $t = 0; $t < $total_triggers; $t++ ) {
 	$second    = wp_rand( 0, 59 );
 	$timestamp = sprintf( '%s %02d:%02d:%02d', $date, $hour, $minute, $second );
 
-	$page      = ept_weighted_random( $event_page_weights );
+	$page      = epictr_weighted_random( $event_page_weights );
 	$ev_ids    = $page_event_map[ $page ];
 	$event_id  = $ev_ids[ wp_rand( 0, count( $ev_ids ) - 1 ) ];
 	$visitor   = $event_visitor_ids[ wp_rand( 0, count( $event_visitor_ids ) - 1 ) ];

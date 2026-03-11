@@ -64,29 +64,29 @@
     }
 
     function init() {
-        var pickers = document.querySelectorAll('.ept-date-picker');
+        var pickers = document.querySelectorAll('.epictr-date-picker');
         if (!pickers.length) return;
 
         pickers.forEach(function (picker) {
-            var trigger = picker.querySelector('.ept-date-picker__trigger');
-            var dropdown = picker.querySelector('.ept-date-picker__dropdown');
-            var presetBtns = picker.querySelectorAll('.ept-date-picker__preset');
-            var customSection = picker.querySelector('.ept-date-picker__custom');
+            var trigger = picker.querySelector('.epictr-date-picker__trigger');
+            var dropdown = picker.querySelector('.epictr-date-picker__dropdown');
+            var presetBtns = picker.querySelectorAll('.epictr-date-picker__preset');
+            var customSection = picker.querySelector('.epictr-date-picker__custom');
             var customToggle = picker.querySelector('[data-preset="custom"]');
-            var applyBtn = picker.querySelector('.ept-date-picker__apply');
+            var applyBtn = picker.querySelector('.epictr-date-picker__apply');
             var inputFrom = picker.querySelector('input[name="date_from"]');
             var inputTo = picker.querySelector('input[name="date_to"]');
-            var customFrom = picker.querySelector('.ept-date-picker__custom-from');
-            var customTo = picker.querySelector('.ept-date-picker__custom-to');
+            var customFrom = picker.querySelector('.epictr-date-picker__custom-from');
+            var customTo = picker.querySelector('.epictr-date-picker__custom-to');
 
             // Set trigger label
-            var triggerLabel = trigger.querySelector('.ept-date-picker__label');
+            var triggerLabel = trigger.querySelector('.epictr-date-picker__label');
             triggerLabel.textContent = buildTriggerLabel(inputFrom.value, inputTo.value);
 
             // Mark active preset
             var active = findActivePreset(inputFrom.value, inputTo.value);
             presetBtns.forEach(function (btn) {
-                var check = btn.querySelector('.ept-date-picker__check');
+                var check = btn.querySelector('.epictr-date-picker__check');
                 if (active && btn.dataset.label === active.label) {
                     check.style.visibility = 'visible';
                 } else {
@@ -116,7 +116,7 @@
                     customSection.classList.toggle('is-visible');
                     // Remove checkmarks from presets
                     presetBtns.forEach(function (btn) {
-                        var check = btn.querySelector('.ept-date-picker__check');
+                        var check = btn.querySelector('.epictr-date-picker__check');
                         check.style.visibility = 'hidden';
                     });
                     // Focus first date input
@@ -189,15 +189,15 @@
 
         // Legend
         var legend = document.createElement('div');
-        legend.className = 'ept-chart__legend';
+        legend.className = 'epictr-chart__legend';
         legend.innerHTML =
-            '<span class="ept-chart__legend-item"><span class="ept-chart__legend-swatch" style="background:' + COLORS.visits.line + '"></span>Total Visits</span>' +
-            '<span class="ept-chart__legend-item"><span class="ept-chart__legend-swatch" style="background:' + COLORS.unique.line + '"></span>Unique Visitors</span>';
+            '<span class="epictr-chart__legend-item"><span class="epictr-chart__legend-swatch" style="background:' + COLORS.visits.line + '"></span>Total Visits</span>' +
+            '<span class="epictr-chart__legend-item"><span class="epictr-chart__legend-swatch" style="background:' + COLORS.unique.line + '"></span>Unique Visitors</span>';
         container.insertBefore(legend, canvas);
 
         // Tooltip
         var tooltip = document.createElement('div');
-        tooltip.className = 'ept-chart__tooltip';
+        tooltip.className = 'epictr-chart__tooltip';
         container.appendChild(tooltip);
 
         function render() {
@@ -338,7 +338,7 @@
     }
 
     function initCharts() {
-        document.querySelectorAll('.ept-chart').forEach(drawChart);
+        document.querySelectorAll('.epictr-chart').forEach(drawChart);
     }
 
     document.addEventListener('DOMContentLoaded', function () {

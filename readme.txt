@@ -74,7 +74,7 @@ Most WordPress event tracking requires Google Tag Manager, custom JavaScript, or
 
 = Does this plugin use cookies? =
 
-Epic Tracking sets a single first-party cookie (`ept_visitor_id`) to identify returning visitors across page views. No personal data is stored in this cookie — it contains only a randomly generated anonymous identifier.
+Epic Tracking sets a single first-party cookie (`epictr_visitor_id`) to identify returning visitors across page views. No personal data is stored in this cookie — it contains only a randomly generated anonymous identifier.
 
 = Does this plugin send data to external services? =
 
@@ -111,6 +111,16 @@ Yes. Go to **Tracking > Settings** and select which roles should be excluded fro
 = How does bot filtering work? =
 
 The plugin maintains a list of known bot and crawler user-agent patterns. Requests matching these patterns are automatically excluded from tracking data.
+
+== External services ==
+
+This plugin uses the [ip-api.com](http://ip-api.com) geolocation service to determine visitor country based on their IP address. An HTTP request is sent to ip-api.com each time a new visitor is recorded (unless a cached result is available). The request contains only the visitor's IP address. No other personal data is sent.
+
+* Service: [ip-api.com](http://ip-api.com)
+* Data sent: visitor IP address
+* When: on each new visit (results are cached for 24 hours)
+* Terms of service: [ip-api.com/docs/legal](https://ip-api.com/docs/legal)
+* Privacy policy: [ip-api.com/docs/legal](https://ip-api.com/docs/legal)
 
 == Screenshots ==
 

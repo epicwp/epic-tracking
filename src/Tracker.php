@@ -14,17 +14,17 @@ class Tracker
         add_action('wp_enqueue_scripts', [self::class, 'enqueueTracker']);
 
         // AJAX endpoints (nopriv = available to non-logged-in users)
-        add_action('wp_ajax_ept_track_visit', [self::class, 'handleTrackVisit']);
-        add_action('wp_ajax_nopriv_ept_track_visit', [self::class, 'handleTrackVisit']);
-        add_action('wp_ajax_ept_track_event', [self::class, 'handleTrackEvent']);
-        add_action('wp_ajax_nopriv_ept_track_event', [self::class, 'handleTrackEvent']);
+        add_action('wp_ajax_epictr_track_visit', [self::class, 'handleTrackVisit']);
+        add_action('wp_ajax_nopriv_epictr_track_visit', [self::class, 'handleTrackVisit']);
+        add_action('wp_ajax_epictr_track_event', [self::class, 'handleTrackEvent']);
+        add_action('wp_ajax_nopriv_epictr_track_event', [self::class, 'handleTrackEvent']);
     }
 
     public static function enqueueTracker(): void
     {
         // Don't track in visual mode or excluded roles
         // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- query param check, not form processing
-        if (isset($_GET['ept_visual_mode'])) {
+        if (isset($_GET['epictr_visual_mode'])) {
             return;
         }
         if (self::isExcludedUser()) {
@@ -32,10 +32,10 @@ class Tracker
         }
 
         wp_enqueue_script(
-            'ept-tracker',
-            EPT_PLUGIN_URL . 'assets/js/tracker.js',
+            'epictr-tracker',
+            EPICTR_PLUGIN_URL . 'assets/js/tracker.js',
             [],
-            EPT_VERSION,
+            EPICTR_VERSION,
             true
         );
 
@@ -44,8 +44,9 @@ class Tracker
         $events = Database::getEventsForPage($pageUrl);
 
         // Pass config to JS inline (no extra HTTP request)
-        wp_localize_script('ept-tracker', 'eptConfig', [
+        wp_localize_script('epictr-tracker', 'epictrConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
+            'nonce'   => wp_create_nonce('epictr_track'),
             'pageUrl' => $pageUrl,
             'events'  => array_map(function ($event) {
                 return [
@@ -57,13 +58,16 @@ class Tracker
         ]);
     }
 
-    // phpcs:disable WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
     public static function handleTrackVisit(): void
     {
+        if (!check_ajax_referer('epictr_track', 'nonce', false)) {
+            wp_send_json_error(__('Invalid nonce', 'epic-tracking'), 403);
+            return;
+        }
+
         $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
         $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
         $referrer  = sanitize_text_field(wp_unslash($_POST['referrer'] ?? ''));
-        // phpcs:enable WordPress.Security.NonceVerification.Missing
         $userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''));
 
         if (empty($visitorId) || empty($pageUrl)) {
@@ -83,13 +87,16 @@ class Tracker
         wp_send_json_success();
     }
 
-    // phpcs:disable WordPress.Security.NonceVerification.Missing -- public tracking endpoint, no nonce for anonymous visitors
     public static function handleTrackEvent(): void
     {
+        if (!check_ajax_referer('epictr_track', 'nonce', false)) {
+            wp_send_json_error(__('Invalid nonce', 'epic-tracking'), 403);
+            return;
+        }
+
         $eventId   = absint(wp_unslash($_POST['event_id'] ?? 0));
         $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
         $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
-        // phpcs:enable WordPress.Security.NonceVerification.Missing
         $userAgent = sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''));
 
         if (empty($eventId) || empty($visitorId) || empty($pageUrl)) {
@@ -112,7 +119,7 @@ class Tracker
             return false;
         }
 
-        $settings = get_option('ept_settings', []);
+        $settings = get_option('epictr_settings', []);
         $excludedRoles = $settings['excluded_roles'] ?? ['administrator'];
         $user = wp_get_current_user();
 

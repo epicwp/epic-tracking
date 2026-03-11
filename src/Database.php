@@ -9,7 +9,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Database
 {
     const DB_VERSION = '1.2.0';
-    const DB_VERSION_OPTION = 'ept_db_version';
+    const DB_VERSION_OPTION = 'epictr_db_version';
 
     public static function init(): void
     {
@@ -36,7 +36,7 @@ class Database
         global $wpdb;
         $charset = $wpdb->get_charset_collate();
 
-        $sql = "CREATE TABLE {$wpdb->prefix}ept_events (
+        $sql = "CREATE TABLE {$wpdb->prefix}epictr_events (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             page_url varchar(500) NOT NULL,
             selector varchar(500) NOT NULL,
@@ -49,7 +49,7 @@ class Database
             KEY page_url (page_url(191))
         ) $charset;
 
-        CREATE TABLE {$wpdb->prefix}ept_visits (
+        CREATE TABLE {$wpdb->prefix}epictr_visits (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             visitor_id varchar(64) NOT NULL,
             page_url varchar(500) NOT NULL,
@@ -71,7 +71,7 @@ class Database
             KEY country_code (country_code)
         ) $charset;
 
-        CREATE TABLE {$wpdb->prefix}ept_event_log (
+        CREATE TABLE {$wpdb->prefix}epictr_event_log (
             id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             event_id bigint(20) unsigned NOT NULL,
             visitor_id varchar(64) NOT NULL,
@@ -94,7 +94,7 @@ class Database
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
         return $wpdb->get_results(
             $wpdb->prepare(
-                "SELECT * FROM {$wpdb->prefix}ept_events WHERE page_url = %s ORDER BY id ASC",
+                "SELECT * FROM {$wpdb->prefix}epictr_events WHERE page_url = %s ORDER BY id ASC",
                 $pageUrl
             ),
             ARRAY_A
@@ -105,7 +105,7 @@ class Database
     {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->insert("{$wpdb->prefix}ept_events", [
+        $wpdb->insert("{$wpdb->prefix}epictr_events", [
             'page_url'       => $data['page_url'],
             'selector'       => $data['selector'],
             'reference_name' => $data['reference_name'],
@@ -128,21 +128,21 @@ class Database
             return false;
         }
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return (bool) $wpdb->update("{$wpdb->prefix}ept_events", $update, ['id' => $id]);
+        return (bool) $wpdb->update("{$wpdb->prefix}epictr_events", $update, ['id' => $id]);
     }
 
     public static function deleteEvent(int $id): bool
     {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        return (bool) $wpdb->delete("{$wpdb->prefix}ept_events", ['id' => $id]);
+        return (bool) $wpdb->delete("{$wpdb->prefix}epictr_events", ['id' => $id]);
     }
 
     public static function logVisit(string $visitorId, string $pageUrl, string $referrer, string $userAgent, string $deviceType = '', string $browser = '', string $os = '', string $country = '', string $countryCode = ''): void
     {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->insert("{$wpdb->prefix}ept_visits", [
+        $wpdb->insert("{$wpdb->prefix}epictr_visits", [
             'visitor_id'   => $visitorId,
             'page_url'     => $pageUrl,
             'referrer'     => $referrer,
@@ -159,7 +159,7 @@ class Database
     {
         global $wpdb;
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-        $wpdb->insert("{$wpdb->prefix}ept_event_log", [
+        $wpdb->insert("{$wpdb->prefix}epictr_event_log", [
             'event_id'   => $eventId,
             'visitor_id' => $visitorId,
             'page_url'   => $pageUrl,
@@ -174,7 +174,7 @@ class Database
             $wpdb->prepare(
                 "SELECT COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE created_at >= %s AND created_at < %s",
                 $dateFrom, $dateTo
             ),
@@ -190,7 +190,7 @@ class Database
         return (int) $wpdb->get_var(
             $wpdb->prepare(
                 "SELECT COUNT(DISTINCT page_url)
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE created_at >= %s AND created_at < %s",
                 $dateFrom, $dateTo
             )
@@ -212,7 +212,7 @@ class Database
                 "SELECT page_url,
                         COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE created_at >= %s AND created_at < %s
                  GROUP BY page_url
                  ORDER BY {$orderBy} {$order}
@@ -232,7 +232,7 @@ class Database
             $wpdb->prepare(
                 "SELECT COUNT(l.id) as total_triggers,
                         COUNT(DISTINCT l.visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_event_log l
+                 FROM {$wpdb->prefix}epictr_event_log l
                  WHERE l.created_at >= %s AND l.created_at < %s",
                 $dateFrom, $dateTo
             ),
@@ -248,13 +248,13 @@ class Database
             // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
             return (int) $wpdb->get_var(
                 $wpdb->prepare(
-                    "SELECT COUNT(*) FROM {$wpdb->prefix}ept_events WHERE page_url = %s",
+                    "SELECT COUNT(*) FROM {$wpdb->prefix}epictr_events WHERE page_url = %s",
                     $pageUrl
                 )
             );
         }
         // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
-        return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}ept_events");
+        return (int) $wpdb->get_var("SELECT COUNT(*) FROM {$wpdb->prefix}epictr_events");
     }
 
     public static function getEventStats(string $dateFrom, string $dateTo, int $perPage = 20, int $page = 1, string $pageUrl = '', string $orderBy = 'total_triggers', string $order = 'DESC'): array
@@ -280,8 +280,8 @@ class Database
                 "SELECT e.id, e.reference_name, e.event_tag, e.event_type, e.page_url,
                         COUNT(l.id) as total_triggers,
                         COUNT(DISTINCT l.visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_events e
-                 LEFT JOIN {$wpdb->prefix}ept_event_log l ON e.id = l.event_id
+                 FROM {$wpdb->prefix}epictr_events e
+                 LEFT JOIN {$wpdb->prefix}epictr_event_log l ON e.id = l.event_id
                     AND l.created_at >= %s AND l.created_at < %s
                  $where
                  GROUP BY e.id
@@ -305,7 +305,7 @@ class Database
                 "SELECT DATE(created_at) as visit_date,
                         COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE created_at >= %s AND created_at < %s
                  GROUP BY visit_date
                  ORDER BY visit_date ASC",
@@ -323,7 +323,7 @@ class Database
             $wpdb->prepare(
                 "SELECT COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s",
                 $pageUrl, $dateFrom, $dateTo
             ),
@@ -341,7 +341,7 @@ class Database
                 "SELECT DATE(created_at) as visit_date,
                         COUNT(*) as total_visits,
                         COUNT(DISTINCT visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s
                  GROUP BY visit_date
                  ORDER BY visit_date ASC",
@@ -358,7 +358,7 @@ class Database
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT referrer, COUNT(*) as visits
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s
                        AND referrer != ''
                  GROUP BY referrer
@@ -377,7 +377,7 @@ class Database
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT device_type, COUNT(*) as visits
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s
                        AND device_type != ''
                  GROUP BY device_type
@@ -395,7 +395,7 @@ class Database
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT browser, COUNT(*) as visits
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s
                        AND browser != ''
                  GROUP BY browser
@@ -413,7 +413,7 @@ class Database
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT os, COUNT(*) as visits
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s
                        AND os != ''
                  GROUP BY os
@@ -433,8 +433,8 @@ class Database
                 "SELECT e.id, e.reference_name, e.event_tag, e.event_type,
                         COUNT(l.id) as total_triggers,
                         COUNT(DISTINCT l.visitor_id) as unique_visitors
-                 FROM {$wpdb->prefix}ept_events e
-                 LEFT JOIN {$wpdb->prefix}ept_event_log l ON e.id = l.event_id
+                 FROM {$wpdb->prefix}epictr_events e
+                 LEFT JOIN {$wpdb->prefix}epictr_event_log l ON e.id = l.event_id
                     AND l.created_at >= %s AND l.created_at < %s
                  WHERE e.page_url = %s
                  GROUP BY e.id
@@ -452,7 +452,7 @@ class Database
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT country, COUNT(*) as visits
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE page_url = %s AND created_at >= %s AND created_at < %s
                        AND country != ''
                  GROUP BY country
@@ -470,7 +470,7 @@ class Database
         return $wpdb->get_results(
             $wpdb->prepare(
                 "SELECT country, country_code, COUNT(*) as visits
-                 FROM {$wpdb->prefix}ept_visits
+                 FROM {$wpdb->prefix}epictr_visits
                  WHERE created_at >= %s AND created_at < %s
                        AND country != ''
                  GROUP BY country, country_code

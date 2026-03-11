@@ -17,7 +17,8 @@ class Admin
 
     public static function hideSubmenuItems(): void
     {
-        echo '<style>#adminmenu a[href*="page=epic-tracking-page-detail"],#adminmenu a[href*="page=epic-tracking-all-visits"],#adminmenu a[href*="page=epic-tracking-all-events"]{display:none}</style>';
+        $css = '#adminmenu a[href*="page=epic-tracking-page-detail"],#adminmenu a[href*="page=epic-tracking-all-visits"],#adminmenu a[href*="page=epic-tracking-all-events"]{display:none}';
+        wp_add_inline_style('dashicons', $css);
     }
 
     public static function addMenuPages(): void
@@ -72,7 +73,7 @@ class Admin
 
     public static function registerSettings(): void
     {
-        register_setting('ept_settings_group', 'ept_settings', [
+        register_setting('epictr_settings_group', 'epictr_settings', [
             'type'              => 'array',
             'sanitize_callback' => [self::class, 'sanitizeSettings'],
             'default'           => ['excluded_roles' => ['administrator']],
@@ -92,8 +93,8 @@ class Admin
     // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderDashboard(): void
     {
-        wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
-        wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
+        wp_enqueue_style('epictr-admin', EPICTR_PLUGIN_URL . 'assets/css/admin.css', [], EPICTR_VERSION);
+        wp_enqueue_script('epictr-admin', EPICTR_PLUGIN_URL . 'assets/js/admin.js', [], EPICTR_VERSION, true);
 
         // Date range — default to last 7 days
         $today    = gmdate('Y-m-d');
@@ -144,15 +145,15 @@ class Admin
         $eventStats      = Database::getEventStats($sqlFrom, $sqlTo, self::PER_PAGE, $eventPage, $filterUrl, $eventSort, $eventOrder);
         $eventTotalPages = (int) ceil(Database::getEventStatsCount($filterUrl) / self::PER_PAGE);
 
-        include EPT_PLUGIN_DIR . 'templates/admin-dashboard.php';
+        include EPICTR_PLUGIN_DIR . 'templates/admin-dashboard.php';
     }
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderPageDetail(): void
     {
-        wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
-        wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
+        wp_enqueue_style('epictr-admin', EPICTR_PLUGIN_URL . 'assets/css/admin.css', [], EPICTR_VERSION);
+        wp_enqueue_script('epictr-admin', EPICTR_PLUGIN_URL . 'assets/js/admin.js', [], EPICTR_VERSION, true);
 
         $pageUrl = sanitize_text_field(wp_unslash($_GET['page_url'] ?? ''));
         if ($pageUrl === '') {
@@ -184,15 +185,15 @@ class Admin
         $countries  = Database::getPageCountryBreakdown($pageUrl, $sqlFrom, $sqlTo);
         $events     = Database::getPageEvents($pageUrl, $sqlFrom, $sqlTo);
 
-        include EPT_PLUGIN_DIR . 'templates/admin-page-detail.php';
+        include EPICTR_PLUGIN_DIR . 'templates/admin-page-detail.php';
     }
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderAllVisits(): void
     {
-        wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
-        wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
+        wp_enqueue_style('epictr-admin', EPICTR_PLUGIN_URL . 'assets/css/admin.css', [], EPICTR_VERSION);
+        wp_enqueue_script('epictr-admin', EPICTR_PLUGIN_URL . 'assets/js/admin.js', [], EPICTR_VERSION, true);
 
         $today    = gmdate('Y-m-d');
         $dateFrom = sanitize_text_field(wp_unslash($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days'))));
@@ -215,15 +216,15 @@ class Admin
         $visitStats      = Database::getVisitStats($sqlFrom, $sqlTo, self::PER_PAGE_FULL, $currentPage, $sortBy, $sortOrder);
         $totalPages      = (int) ceil(Database::getVisitStatsCount($sqlFrom, $sqlTo) / self::PER_PAGE_FULL);
 
-        include EPT_PLUGIN_DIR . 'templates/admin-all-visits.php';
+        include EPICTR_PLUGIN_DIR . 'templates/admin-all-visits.php';
     }
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     // phpcs:disable WordPress.Security.NonceVerification.Recommended -- admin page render, no form processing
     public static function renderAllEvents(): void
     {
-        wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
-        wp_enqueue_script('ept-admin', EPT_PLUGIN_URL . 'assets/js/admin.js', [], EPT_VERSION, true);
+        wp_enqueue_style('epictr-admin', EPICTR_PLUGIN_URL . 'assets/css/admin.css', [], EPICTR_VERSION);
+        wp_enqueue_script('epictr-admin', EPICTR_PLUGIN_URL . 'assets/js/admin.js', [], EPICTR_VERSION, true);
 
         $today    = gmdate('Y-m-d');
         $dateFrom = sanitize_text_field(wp_unslash($_GET['date_from'] ?? gmdate('Y-m-d', strtotime('-6 days'))));
@@ -246,17 +247,17 @@ class Admin
         $eventStats      = Database::getEventStats($sqlFrom, $sqlTo, self::PER_PAGE_FULL, $currentPage, '', $sortBy, $sortOrder);
         $totalPages      = (int) ceil(Database::getEventStatsCount() / self::PER_PAGE_FULL);
 
-        include EPT_PLUGIN_DIR . 'templates/admin-all-events.php';
+        include EPICTR_PLUGIN_DIR . 'templates/admin-all-events.php';
     }
     // phpcs:enable WordPress.Security.NonceVerification.Recommended
 
     public static function renderSettings(): void
     {
-        wp_enqueue_style('ept-admin', EPT_PLUGIN_URL . 'assets/css/admin.css', [], EPT_VERSION);
+        wp_enqueue_style('epictr-admin', EPICTR_PLUGIN_URL . 'assets/css/admin.css', [], EPICTR_VERSION);
 
-        $settings = get_option('ept_settings', ['excluded_roles' => ['administrator']]);
+        $settings = get_option('epictr_settings', ['excluded_roles' => ['administrator']]);
         $allRoles = wp_roles()->role_names;
 
-        include EPT_PLUGIN_DIR . 'templates/admin-settings.php';
+        include EPICTR_PLUGIN_DIR . 'templates/admin-settings.php';
     }
 }

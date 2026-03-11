@@ -12,9 +12,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 global $wpdb;
 
 $tables = array(
-	$wpdb->prefix . 'ept_event_log',
-	$wpdb->prefix . 'ept_events',
-	$wpdb->prefix . 'ept_visits',
+	$wpdb->prefix . 'epictr_event_log',
+	$wpdb->prefix . 'epictr_events',
+	$wpdb->prefix . 'epictr_visits',
 );
 
 foreach ( $tables as $table ) {

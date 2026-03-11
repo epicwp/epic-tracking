@@ -1,10 +1,10 @@
 /* Visual mode: push page content and show sidebar */
-body.ept-visual-mode-active {
+body.epictr-visual-mode-active {
     margin-right: 380px !important;
 }
 
 /* Sidebar — fixed right panel */
-#ept-visual-sidebar {
+#epictr-visual-sidebar {
     position: fixed;
     top: 0;
     right: 0;
@@ -24,20 +24,20 @@ body.ept-visual-mode-active {
 }
 
 /* Account for WP admin bar */
-body.admin-bar #ept-visual-sidebar {
+body.admin-bar #epictr-visual-sidebar {
     top: 32px;
     height: calc(100vh - 32px);
 }
 
 @media screen and (max-width: 782px) {
-    body.admin-bar #ept-visual-sidebar {
+    body.admin-bar #epictr-visual-sidebar {
         top: 46px;
         height: calc(100vh - 46px);
     }
 }
 
 /* --- Header --- */
-.ept-sidebar-header {
+.epictr-sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -46,7 +46,7 @@ body.admin-bar #ept-visual-sidebar {
     flex-shrink: 0;
 }
 
-.ept-sidebar-header h2 {
+.epictr-sidebar-header h2 {
     margin: 0;
     font-size: 14px;
     font-weight: 600;
@@ -56,14 +56,14 @@ body.admin-bar #ept-visual-sidebar {
     gap: 8px;
 }
 
-.ept-sidebar-header h2 .dashicons {
+.epictr-sidebar-header h2 .dashicons {
     font-size: 18px;
     width: 18px;
     height: 18px;
     color: rgba(255, 255, 255, 0.6);
 }
 
-.ept-close-btn {
+.epictr-close-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -77,19 +77,19 @@ body.admin-bar #ept-visual-sidebar {
     transition: background 0.15s, color 0.15s;
 }
 
-.ept-close-btn:hover {
+.epictr-close-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
 }
 
 /* --- Content area --- */
-.ept-sidebar-content {
+.epictr-sidebar-content {
     padding: 20px;
     flex: 1;
     overflow-y: auto;
 }
 
-.ept-sidebar-content h3 {
+.epictr-sidebar-content h3 {
     font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
@@ -101,20 +101,20 @@ body.admin-bar #ept-visual-sidebar {
     gap: 5px;
 }
 
-.ept-sidebar-content h3 .dashicons {
+.epictr-sidebar-content h3 .dashicons {
     font-size: 14px;
     width: 14px;
     height: 14px;
 }
 
-.ept-sidebar-content hr {
+.epictr-sidebar-content hr {
     border: none;
     border-top: 1px solid #f0f0f1;
     margin: 20px 0;
 }
 
 /* --- Button styles (WP admin CSS not available on frontend) --- */
-#ept-visual-sidebar .ept-btn {
+#epictr-visual-sidebar .epictr-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -136,25 +136,25 @@ body.admin-bar #ept-visual-sidebar {
     white-space: nowrap;
 }
 
-#ept-visual-sidebar .ept-btn:hover {
+#epictr-visual-sidebar .epictr-btn:hover {
     background: #f6f7f7;
     border-color: #8c8f94;
     color: #1d2327;
 }
 
-#ept-visual-sidebar .ept-btn-primary {
+#epictr-visual-sidebar .epictr-btn-primary {
     background: #2271b1;
     border-color: #2271b1;
     color: #fff;
 }
 
-#ept-visual-sidebar .ept-btn-primary:hover {
+#epictr-visual-sidebar .epictr-btn-primary:hover {
     background: #135e96;
     border-color: #135e96;
     color: #fff;
 }
 
-#ept-visual-sidebar .ept-btn-sm {
+#epictr-visual-sidebar .epictr-btn-sm {
     height: 28px;
     padding: 0 10px;
     font-size: 12px;
@@ -162,23 +162,23 @@ body.admin-bar #ept-visual-sidebar {
     border-radius: 5px;
 }
 
-#ept-visual-sidebar .ept-btn-danger {
+#epictr-visual-sidebar .epictr-btn-danger {
     color: #d63638;
     border-color: #d63638;
     background: #fff;
 }
 
-#ept-visual-sidebar .ept-btn-danger:hover {
+#epictr-visual-sidebar .epictr-btn-danger:hover {
     background: #d63638;
     color: #fff;
 }
 
-#ept-visual-sidebar .ept-btn-full {
+#epictr-visual-sidebar .epictr-btn-full {
     width: 100%;
 }
 
 /* Dashicons inside buttons */
-#ept-visual-sidebar .ept-btn .dashicons {
+#epictr-visual-sidebar .epictr-btn .dashicons {
     font-size: 16px;
     width: 16px;
     height: 16px;
@@ -186,14 +186,14 @@ body.admin-bar #ept-visual-sidebar {
     vertical-align: text-bottom;
 }
 
-#ept-visual-sidebar .ept-btn-sm .dashicons {
+#epictr-visual-sidebar .epictr-btn-sm .dashicons {
     font-size: 14px;
     width: 14px;
     height: 14px;
 }
 
 /* --- Select Element primary action --- */
-#ept-select-element {
+#epictr-select-element {
     margin-top: 4px;
     height: 40px;
     font-size: 13px;
@@ -202,14 +202,14 @@ body.admin-bar #ept-visual-sidebar {
 }
 
 /* Active selection state */
-.ept-selecting-active #ept-select-element {
+.epictr-selecting-active #epictr-select-element {
     background: #d63638 !important;
     border-color: #d63638 !important;
     color: #fff !important;
 }
 
 /* --- Event list items --- */
-.ept-event-item {
+.epictr-event-item {
     background: #f8f9fa;
     border: 1px solid #f0f0f1;
     border-radius: 8px;
@@ -218,25 +218,25 @@ body.admin-bar #ept-visual-sidebar {
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.ept-event-item:hover {
+.epictr-event-item:hover {
     border-color: #c3c4c7;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
 }
 
-.ept-event-item-header {
+.epictr-event-item-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 8px;
 }
 
-.ept-event-item-name {
+.epictr-event-item-name {
     font-weight: 600;
     font-size: 13px;
     color: #1d2327;
 }
 
-.ept-event-item-tag {
+.epictr-event-item-tag {
     flex-shrink: 0;
     display: inline-block;
     background: #e7f1fa;
@@ -248,7 +248,7 @@ body.admin-bar #ept-visual-sidebar {
     font-weight: 500;
 }
 
-.ept-event-item-selector {
+.epictr-event-item-selector {
     color: #787c82;
     font-size: 11px;
     font-family: Menlo, Consolas, Monaco, monospace;
@@ -257,22 +257,22 @@ body.admin-bar #ept-visual-sidebar {
     line-height: 1.4;
 }
 
-.ept-event-item-actions {
+.epictr-event-item-actions {
     margin-top: 12px;
     display: flex;
     gap: 6px;
 }
 
 /* --- Form styling --- */
-#ept-event-form {
+#epictr-event-form {
     margin-top: 20px;
 }
 
-.ept-form-group {
+.epictr-form-group {
     margin-bottom: 14px;
 }
 
-.ept-form-group label {
+.epictr-form-group label {
     display: block;
     font-size: 12px;
     font-weight: 600;
@@ -280,7 +280,7 @@ body.admin-bar #ept-visual-sidebar {
     color: #1d2327;
 }
 
-.ept-form-group input[type="text"] {
+.epictr-form-group input[type="text"] {
     width: 100%;
     font-size: 13px;
     font-family: inherit;
@@ -294,26 +294,26 @@ body.admin-bar #ept-visual-sidebar {
     transition: border-color 0.15s, box-shadow 0.15s;
 }
 
-.ept-form-group input[type="text"]:focus {
+.epictr-form-group input[type="text"]:focus {
     border-color: #2271b1;
     box-shadow: 0 0 0 2px rgba(34, 113, 177, 0.15);
     outline: none;
 }
 
-.ept-form-group input[type="text"][readonly] {
+.epictr-form-group input[type="text"][readonly] {
     background: #f8f9fa;
     color: #50575e;
     border-color: #e0e0e0;
 }
 
-.ept-form-actions {
+.epictr-form-actions {
     display: flex;
     gap: 8px;
     margin-top: 16px;
 }
 
 /* --- Highlight overlay for element hover during selection --- */
-#ept-highlight-overlay {
+#epictr-highlight-overlay {
     position: absolute;
     background: rgba(34, 113, 177, 0.08);
     border: 2px solid #2271b1;
@@ -325,12 +325,12 @@ body.admin-bar #ept-visual-sidebar {
 }
 
 /* Prevent page interactions during selection */
-body.ept-selecting-active *:not(#ept-visual-sidebar):not(#ept-visual-sidebar *):not(#ept-highlight-overlay):not(#wpadminbar):not(#wpadminbar *) {
+body.epictr-selecting-active *:not(#epictr-visual-sidebar):not(#epictr-visual-sidebar *):not(#epictr-highlight-overlay):not(#wpadminbar):not(#wpadminbar *) {
     cursor: crosshair !important;
 }
 
 /* --- No events message --- */
-.ept-no-events {
+.epictr-no-events {
     color: #a7aaad;
     font-size: 13px;
     text-align: center;
@@ -341,24 +341,24 @@ body.ept-selecting-active *:not(#ept-visual-sidebar):not(#ept-visual-sidebar *):
     margin: 0;
 }
 
-.ept-loading {
+.epictr-loading {
     color: #787c82;
     text-align: center;
     padding: 28px 0;
 }
 
 /* --- Button loading state --- */
-@keyframes ept-spin {
+@keyframes epictr-spin {
     to { transform: rotate(360deg); }
 }
 
-#ept-visual-sidebar .ept-btn-loading {
+#epictr-visual-sidebar .epictr-btn-loading {
     pointer-events: none;
     opacity: 0.7;
     position: relative;
 }
 
-#ept-visual-sidebar .ept-btn-loading::after {
+#epictr-visual-sidebar .epictr-btn-loading::after {
     content: '';
     display: inline-block;
     width: 14px;
@@ -366,7 +366,7 @@ body.ept-selecting-active *:not(#ept-visual-sidebar):not(#ept-visual-sidebar *):
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 50%;
-    animation: ept-spin 0.6s linear infinite;
+    animation: epictr-spin 0.6s linear infinite;
     vertical-align: middle;
     margin-left: 6px;
 }

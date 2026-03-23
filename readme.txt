@@ -1,4 +1,4 @@
-=== Epic Tracking ===
+=== Epic Tracking – Click & Event Tracking for WordPress ===
 Contributors: epicwpsolutions
 Tags: event tracking, click tracking, analytics, page views, statistics
 Requires at least: 6.0
@@ -8,13 +8,13 @@ Requires PHP: 7.4
 License: GPL-2.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Easy event tracking for WordPress. Point, click, and track — no code, no tag managers, no third-party scripts.
+Click and event tracking for WordPress. Point, click, and track — no code, no tag managers, no third-party scripts.
 
 == Description ==
 
 Epic Tracking lets you add event tracking to any element on your WordPress site using a visual editor. Click the element you want to track, give it a name, and you're done — events start recording immediately. No code, no Google Tag Manager, no external scripts.
 
-= Visual Event Editor =
+= Visual Click & Event Editor =
 
 Open the visual editor on any page from the WordPress admin bar. Click a button, link, form, CTA, or any other element — give it a reference name and tag — and save. That's it. The event is live and tracking starts immediately.
 

@@ -8,7 +8,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 class Database
 {
-    const DB_VERSION = '1.2.0';
+    const DB_VERSION = '1.3.0';
     const DB_VERSION_OPTION = 'epictr_db_version';
 
     public static function init(): void
@@ -18,6 +18,7 @@ class Database
 
     public static function activate(): void
     {
+        self::migrateOldTables();
         self::createTables();
         update_option(self::DB_VERSION_OPTION, self::DB_VERSION);
     }
@@ -26,8 +27,54 @@ class Database
     {
         $installed = get_option(self::DB_VERSION_OPTION, '0');
         if (version_compare($installed, self::DB_VERSION, '<')) {
+            self::migrateOldTables();
             self::createTables();
             update_option(self::DB_VERSION_OPTION, self::DB_VERSION);
+        }
+    }
+
+    /**
+     * Migrate old ept_ prefixed tables to epictr_ prefix, preserving all data.
+     */
+    private static function migrateOldTables(): void
+    {
+        global $wpdb;
+
+        $old_tables = [
+            "{$wpdb->prefix}ept_events"    => "{$wpdb->prefix}epictr_events",
+            "{$wpdb->prefix}ept_visits"    => "{$wpdb->prefix}epictr_visits",
+            "{$wpdb->prefix}ept_event_log" => "{$wpdb->prefix}epictr_event_log",
+        ];
+
+        foreach ($old_tables as $old_name => $new_name) {
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            $old_exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $old_name));
+            // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+            $new_exists = $wpdb->get_var($wpdb->prepare('SHOW TABLES LIKE %s', $new_name));
+
+            if ($old_exists && !$new_exists) {
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- table names are hardcoded above
+                $wpdb->query("RENAME TABLE `{$old_name}` TO `{$new_name}`");
+            } elseif ($old_exists && $new_exists) {
+                // New table exists but may be empty — drop it and rename the old one with data
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                $new_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$new_name}`");
+                // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                $old_count = (int) $wpdb->get_var("SELECT COUNT(*) FROM `{$old_name}`");
+
+                if ($old_count > 0 && $new_count === 0) {
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange
+                    $wpdb->query("DROP TABLE `{$new_name}`");
+                    // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+                    $wpdb->query("RENAME TABLE `{$old_name}` TO `{$new_name}`");
+                }
+            }
+        }
+
+        // Migrate old option name
+        $old_version = get_option('ept_db_version');
+        if ($old_version !== false) {
+            delete_option('ept_db_version');
         }
     }
 

@@ -27,7 +27,6 @@
     function sendBeacon(action, data) {
         var formData = new FormData();
         formData.append('action', action);
-        formData.append('nonce', epictrConfig.nonce);
         for (var key in data) {
             formData.append(key, data[key]);
         }

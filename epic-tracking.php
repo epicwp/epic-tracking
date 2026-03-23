@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('EPICTR_VERSION', '1.3.5');
+define('EPICTR_VERSION', '1.3.6');
 define('EPICTR_PLUGIN_DIR', plugin_dir_path(__FILE__));
 define('EPICTR_PLUGIN_URL', plugin_dir_url(__FILE__));
 define('EPICTR_PLUGIN_FILE', __FILE__);

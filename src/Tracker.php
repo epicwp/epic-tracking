@@ -46,7 +46,6 @@ class Tracker
         // Pass config to JS inline (no extra HTTP request)
         wp_localize_script('epictr-tracker', 'epictrConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'nonce'   => wp_create_nonce('epictr_track'),
             'pageUrl' => $pageUrl,
             'events'  => array_map(function ($event) {
                 return [
@@ -58,13 +57,9 @@ class Tracker
         ]);
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- public tracking endpoint, nonce breaks with page caching
     public static function handleTrackVisit(): void
     {
-        if (!check_ajax_referer('epictr_track', 'nonce', false)) {
-            wp_send_json_error(__('Invalid nonce', 'epic-tracking'), 403);
-            return;
-        }
-
         $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
         $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));
         $referrer  = sanitize_text_field(wp_unslash($_POST['referrer'] ?? ''));
@@ -87,13 +82,9 @@ class Tracker
         wp_send_json_success();
     }
 
+    // phpcs:ignore WordPress.Security.NonceVerification.Missing -- public tracking endpoint, nonce breaks with page caching
     public static function handleTrackEvent(): void
     {
-        if (!check_ajax_referer('epictr_track', 'nonce', false)) {
-            wp_send_json_error(__('Invalid nonce', 'epic-tracking'), 403);
-            return;
-        }
-
         $eventId   = absint(wp_unslash($_POST['event_id'] ?? 0));
         $visitorId = sanitize_text_field(wp_unslash($_POST['visitor_id'] ?? ''));
         $pageUrl   = sanitize_text_field(wp_unslash($_POST['page_url'] ?? ''));

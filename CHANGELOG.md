@@ -1,3 +1,10 @@
+## [1.3.7](https://github.com/epicwp/epic-tracking/compare/v1.3.6...v1.3.7) (2026-03-23)
+
+
+### Bug Fixes
+
+* restore tracking by removing nonce from public endpoints and migrating renamed tables ([e30158d](https://github.com/epicwp/epic-tracking/commit/e30158d9b422b1b5356f9670deeee2873a5fa8d3))
+
 ## [1.3.6](https://github.com/epicwp/epic-tracking/compare/v1.3.5...v1.3.6) (2026-03-11)
 
 

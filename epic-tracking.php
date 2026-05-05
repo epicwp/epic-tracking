@@ -3,7 +3,7 @@
  * Plugin Name:       Epic Tracking
  * Plugin URI:        https://github.com/epicwp/epic-tracking
  * Description:       Easy event tracking for WordPress. Point, click, and track — no code, no tag managers, no third-party scripts.
- * Version:           1.3.7
+ * Version:           1.3.8
  * Author:            Epic WP Solutions
  * Author URI:        https://epicwpsolutions.com
  * Text Domain:       epic-tracking

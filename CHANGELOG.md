@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/epicwp/epic-tracking/compare/v1.3.7...v1.3.8) (2026-05-05)
+
+
+### Bug Fixes
+
+* run table migration on every request, not only admin_init ([#1](https://github.com/epicwp/epic-tracking/issues/1)) ([232420e](https://github.com/epicwp/epic-tracking/commit/232420e279a0da6f6791491829a2847feacbd116))
+
 ## [1.3.7](https://github.com/epicwp/epic-tracking/compare/v1.3.6...v1.3.7) (2026-03-23)
 
 

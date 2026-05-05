@@ -13,7 +13,7 @@ class Database
 
     public static function init(): void
     {
-        add_action('admin_init', [self::class, 'maybeUpgrade']);
+        self::maybeUpgrade();
     }
 
     public static function activate(): void
